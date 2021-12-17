@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:requisicion_viaticos_app/VisualizarRequisiciones/index.dart';
 
 class DrawerComponent extends StatefulWidget {
   @override
@@ -38,7 +39,13 @@ class _DrawerComponentState extends State<DrawerComponent> {
           ),
       ListTile(
         title: Text('Listado de requisiciones'),
-        onTap: () {                    
+        onTap: () {
+          Navigator.push<void>(
+        context,
+        MaterialPageRoute<void>(
+          builder: (BuildContext context) => VisualizarRequisiciones(),
+        ),
+      );                    
         },
         leading: Icon(Icons.assignment_rounded),
       ),

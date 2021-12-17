@@ -40,6 +40,8 @@ dependencies:
   cached_network_image: ^3.2.0
   intl: ^0.17.0
   getwidget: ^2.0.4
+  date_format: ^2.0.4
+  syncfusion_flutter_datepicker: ^19.4.38
 
 dev_dependencies:
   flutter_test:

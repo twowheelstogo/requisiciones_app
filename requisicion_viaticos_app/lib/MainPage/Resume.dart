@@ -76,13 +76,13 @@ class Resume extends StatelessWidget {
         style: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.w400,
-          fontSize: 10        
+          fontSize: 12        
         )),
         Text(time,
         style: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.w500,
-          fontSize: 10
+          fontSize: 12
         ),
         ),
       ],
