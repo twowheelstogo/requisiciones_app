@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:requisicion_viaticos_app/Components/drawer.dart';
+import 'package:requisicion_viaticos_app/MainPage/Resume.dart';
 import 'package:requisicion_viaticos_app/MainPage/userComponent.dart';
 import 'package:intl/intl.dart';
 import 'package:requisicion_viaticos_app/Solicitud_requisicion/index.dart';
@@ -89,6 +90,9 @@ class MainPage_ extends State<MainPage> {
                                  ),
                           Divider(height: 20,  thickness: 3,color: Colors.black,),
                           SizedBox(height: 20,),
+                          Container(child: Resume(1,1,0),
+                          width: MediaQuery.of(context).size.width * 0.95,
+                          )  ,                        
                           Solicitud()
                         ],)
                             ),                                                
