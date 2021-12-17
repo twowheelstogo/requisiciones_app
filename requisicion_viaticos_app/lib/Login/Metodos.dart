@@ -8,7 +8,7 @@ import 'dart:convert';
 // ignore: camel_case_types
 class Autenticacion 
 {
-  void storage_(usuario, id, ID_AIRTABLE,urlFoto) async {
+  void storage_(usuario, id, ID_AIRTABLE,urlFoto,Genero) async {
     // obtain shared preferences
     final prefs = await SharedPreferences.getInstance();
     // set value
@@ -16,6 +16,7 @@ class Autenticacion
     prefs.setString('DPI', id);
     prefs.setString('IdAIRTABLE', ID_AIRTABLE);
     prefs.setString('urlFoto', urlFoto);
+    prefs.setString('Genero', Genero);
   }
 
 
@@ -32,8 +33,9 @@ class Autenticacion
         var id = Decoded["records"][0]["fields"]["No_DOCUMENTO"];
         var Nombre = Decoded["records"][0]["fields"]["NOMBRE"];
         var ID_AIRTABLE = Decoded["records"][0]["record_id"];
+        var Genero = Decoded["records"][0]["GENERO"];
         var Foto = Decoded["records"][0]["fields"]["FOTO_PERFIL"][0]["url"];
-        storage_(Nombre.toString(), id.toString(), ID_AIRTABLE.toString(),Foto.toString());
+        storage_(Nombre.toString(), id.toString(), ID_AIRTABLE.toString(),Foto.toString(),Genero.toString());
 
       } else {
         bandera = true;

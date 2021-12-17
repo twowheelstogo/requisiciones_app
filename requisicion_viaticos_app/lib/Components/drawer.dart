@@ -18,25 +18,29 @@ class _DrawerComponentState extends State<DrawerComponent> {
     // Importante: elimine cualquier padding del ListView.
     padding: EdgeInsets.zero,
     children: <Widget>[
-      DrawerHeader(
-        child: Text('Drawer Header'),
-        decoration: BoxDecoration(
-          color: Colors.blue,
-        ),
-      ),
+       DrawerHeader(
+            child: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 10,),
+                  Text("MRB Outsourcing",style: TextStyle(fontSize: 25,color: Colors.grey)),
+                  Text(DateFormat("yyyy-MM-dd").format(DateTime.now()) ,style: TextStyle(fontSize: 15,color: Colors.grey)),                  
+                ],
+              ),
+            ),
+          ),
       ListTile(
-        title: Text('Item 1'),
-        onTap: () {
-          // Actualiza el estado de la aplicación
-          // ...
-        },
-      ),
+            title: Text('Menú principal'),
+            leading: Icon(Icons.home),
+            onTap: () => Navigator.pop(context),
+          ),
       ListTile(
-        title: Text('Item 2'),
-        onTap: () {
-          // Actualiza el estado de la aplicación
-          // ...
+        title: Text('Listado de requisiciones'),
+        onTap: () {                    
         },
+        leading: Icon(Icons.assignment_rounded),
       ),
     ],
   ),

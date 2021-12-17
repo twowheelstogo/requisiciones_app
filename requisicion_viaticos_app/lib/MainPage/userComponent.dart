@@ -61,14 +61,7 @@ class _UserComponentState extends State<UserComponent> {
     prefs.remove("urlFoto");  
   }
  
-  Future<String> getID() async {
-    final prefs = await SharedPreferences.getInstance();
-    String ID = '';
-    final res = prefs.getString('IdAIRTABLE');
-    ID = '$res';
-    return ID;
-  }
-
+ 
   Future<String> getConstant(String msg) async {
     final prefs = await SharedPreferences.getInstance();
     String DPI = '';
@@ -77,21 +70,7 @@ class _UserComponentState extends State<UserComponent> {
     return DPI;
   }
 
-  Future<String> getNombre() async {
-    final prefs = await SharedPreferences.getInstance();
-    String ID = '';
-    final res = prefs.getString('usuario');
-    ID = '$res';
-    return ID;
-  }
 
-  Future<String> getURL() async {
-    final prefs = await SharedPreferences.getInstance();
-    String ID = '';
-    final res = prefs.getString('urlFoto');
-    ID = '$res';
-    return ID;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +108,7 @@ class _UserComponentState extends State<UserComponent> {
         padding: const EdgeInsets.only(right: 10.0),
         child: GFAvatar(
             backgroundImage: NetworkImage(photourl),
-            shape: GFAvatarShape.circle,            
+            shape: GFAvatarShape.circle,                        
             ));
   }
 }

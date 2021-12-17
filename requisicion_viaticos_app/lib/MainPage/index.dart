@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:requisicion_viaticos_app/Components/drawer.dart';
 import 'package:requisicion_viaticos_app/MainPage/userComponent.dart';
 import 'package:intl/intl.dart';
+import 'package:requisicion_viaticos_app/Solicitud_requisicion/index.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -11,6 +13,30 @@ class MainPage extends StatefulWidget {
 class MainPage_ extends State<MainPage> {
 
   final today = new DateTime.now();
+  String Nombre = "";
+  String Genero = "";
+
+  void initState() {    
+    MainPage_();
+    super.initState();
+  }
+
+     Future<String> getConstant(String msg) async {
+    final prefs = await SharedPreferences.getInstance();
+    String DPI = '';
+    final res = prefs.getString(msg);
+    DPI = '$res';
+    return DPI;
+  }
+
+  MainPage_ (){
+    getConstant("usuario").then((val) => setState(() {
+          Nombre = ConvertirNombre(val);
+        }));
+    getConstant("Genero").then((val) => setState(() {
+          Genero = ConvertirNombre(val);
+        }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +44,7 @@ class MainPage_ extends State<MainPage> {
        backgroundColor: Colors.white,
        
       drawer: DrawerComponent(),
-      appBar: new AppBar(
-            toolbarHeight: 62,
+      appBar: new AppBar(            
             backgroundColor: Colors.white,
             iconTheme: IconThemeData(color: Colors.black),
             centerTitle: true,
@@ -29,8 +54,16 @@ class MainPage_ extends State<MainPage> {
             ),
             elevation: 0,
             actions: [UserComponent()],
+             leading: Builder(
+            builder: (context) => IconButton(
+                icon: Icon(Icons.menu,size: 35,),
+                onPressed: () {
+                Scaffold.of(context).openDrawer();
+                },
+            ),
+            ),
           ),
-       body: SingleChildScrollView(
+       body: SingleChildScrollView(         
         child: Container(
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
@@ -39,11 +72,26 @@ class MainPage_ extends State<MainPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      SizedBox(height: 20,),
+                      Container(
+                        alignment: Alignment.topCenter,
+                        child:
+                        Column(children: [
+                           Text(
+                             Genero == 'Masculino' ? 'Bienvenido ${(Nombre)}' : 'Bienvenida ${(Nombre)}',                            
+                            style: TextStyle(fontSize: 17),
+                                 ),
+                                 SizedBox(height: 10,),
+                           Text(
                         Convertir(
                             DateFormat.yMMMMEEEEd().format(today).toString()),
-                        style: Theme.of(context).textTheme.headline5,
-                      )
+                            style: TextStyle(fontSize: 17),
+                                 ),
+                          Divider(height: 20,  thickness: 3,color: Colors.black,),
+                          SizedBox(height: 20,),
+                          Solicitud()
+                        ],)
+                            ),                                                
                         ]
                         )
                           )
@@ -55,7 +103,6 @@ class MainPage_ extends State<MainPage> {
 
   String Convertir(String dia) {
     var arr = dia.split(",");
-
     String nuevaFecha = "";
 
     switch (arr[0]) {
@@ -183,5 +230,19 @@ class MainPage_ extends State<MainPage> {
         break;
     }
     return nuevoMes;
+  }
+ 
+  String ConvertirNombre(String entrada) {
+    String tmp = entrada.replaceAll('  ', ' ');
+    //print(tmp);
+    var tmp2 = tmp.split(' ');
+    String tmp3 = "";
+    for (var i in tmp2) {
+      tmp3 = tmp3 +
+          i[0].toUpperCase() +
+          i.substring(1, i.length).toLowerCase() +
+          " ";
+    }
+    return tmp3.substring(0, tmp3.length - 1);
   }
 }
