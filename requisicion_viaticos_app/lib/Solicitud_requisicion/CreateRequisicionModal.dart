@@ -31,6 +31,9 @@ class _CalendarModalState extends State<CalendarModal> {
         children: [
           SizedBox(height: 15,),
           Text("Solicitud requisición de víaticos",style: TextStyle(fontSize: 20)),
+          Divider(height: 20,  thickness: 2,color: Colors.grey,),
+          SizedBox(height: 15,),
+          Text('Seleccione la fecha de inicio y de fin del viaje'),
           SizedBox(height: 10,),
           SfDateRangePicker(
             onSelectionChanged: _onSelectionChanged,
