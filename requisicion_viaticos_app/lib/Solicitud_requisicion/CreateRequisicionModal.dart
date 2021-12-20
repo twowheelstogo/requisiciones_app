@@ -15,31 +15,21 @@ class _CalendarModalState extends State<CalendarModal> {
   bool _selected = false;
   TextEditingController Monto = TextEditingController();
 
-  List _cities =
-  ["Seleccione una agencia","Cluj-Napoca", "Bucuresti", "Timisoara", "Brasov", "Constanta"]; 
-  List<DropdownMenuItem<String>> _dropDownMenuItems = [];
-  String _currentCity = '';
+  String dropdownvalue = 'Seleccione una opción';   
+  var items = [    
+    'Item 1',
+    'Item 2',
+    'Item 3',
+    'Item 4',
+    'Item 5',
+  ];
 
    @override
-  void initState() {
-    _dropDownMenuItems = getDropDownMenuItems();
-    _currentCity = _dropDownMenuItems[0].value!;
+  void initState() {      
     super.initState();
   }
 
-  List<DropdownMenuItem<String>> getDropDownMenuItems() {
-    List<DropdownMenuItem<String>> items = [];
-    for (String city in _cities) {
-      // here we are creating the drop down menu items, you can customize the item right here
-      // but I'll just use a simple text for this
-      items.add(new DropdownMenuItem(
-          value: city,
-          child: new Text(city)
-      ));
-    }
-    return items;
-  }
-
+  
  
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args){
     if(args.value is PickerDateRange){
@@ -51,12 +41,6 @@ class _CalendarModalState extends State<CalendarModal> {
     }
   }
 
-   void changedDropDownItem(String selectedCity) {    
-     print(selectedCity);
-    setState(() {
-      _currentCity = selectedCity;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,17 +79,25 @@ class _CalendarModalState extends State<CalendarModal> {
         )),  
         SizedBox(height: 20,),                
           DropdownButton(
-              hint: Text('Seleccione una agencia'),
+              hint: Text(dropdownvalue),
               dropdownColor: Colors.white,
               icon: Icon(Icons.arrow_drop_down),
               iconSize: 36,
               isExpanded: true,
-              value: _currentCity,
-              items: _dropDownMenuItems,
-              onChanged: (newValue) {
-                changedDropDownItem(newValue.toString());
-              },
-               
+               //value: dropdownvalue,
+                items: items.map((String items) {
+                return DropdownMenuItem(
+                  value: items,
+                  child: Text(items),
+                );
+              }).toList(),
+              // After selecting the desired option,it will
+              // change button value to selected value
+              onChanged: (String? newValue) { 
+                setState(() {
+                  dropdownvalue = newValue!;
+                });
+              },                             
             ),    
             SizedBox(height: 20,),                    
           Requsion_('Crear nueva requisición',0,size,Colors.green),   
