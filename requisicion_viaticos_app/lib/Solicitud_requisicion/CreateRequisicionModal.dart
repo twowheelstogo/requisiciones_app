@@ -104,9 +104,11 @@ class _CalendarModalState extends State<CalendarModal> {
           SizedBox(height: 5,),                
           ],)                                 
           ],),              
-          SizedBox(height: 20,),                
-          Requsion_('Visualizar historial de requisiciones',1,size,Colors.black),
-          Requsion_('Visualizar requisiciones de los ultimos 30 días',1,size,Colors.black)                 
+          SizedBox(height: 20,),    
+          ExpansionTile(title: Text("Control de requisiciones de víacticos",style: TextStyle(fontSize: 17),textAlign: TextAlign.center,),
+          children: [            
+          Requsion_('Ir a historial de requisiciones',1,size,Colors.black),
+          Requsion_('Ir a requisiciones de los ultimos 30 días',1,size,Colors.black)])
         ],
       ),)
     );
