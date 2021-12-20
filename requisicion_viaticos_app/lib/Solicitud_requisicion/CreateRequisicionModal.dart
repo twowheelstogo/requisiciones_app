@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:requisicion_viaticos_app/VisualizarRequisiciones/index.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:pattern_formatter/pattern_formatter.dart';
 
 class CalendarModal extends StatefulWidget {
   @override
@@ -11,6 +13,33 @@ class _CalendarModalState extends State<CalendarModal> {
   String _initDate ="";
   String _endDate ="";
   bool _selected = false;
+  TextEditingController Monto = TextEditingController();
+
+  List _cities =
+  ["Seleccione una agencia","Cluj-Napoca", "Bucuresti", "Timisoara", "Brasov", "Constanta"]; 
+  List<DropdownMenuItem<String>> _dropDownMenuItems = [];
+  String _currentCity = '';
+
+   @override
+  void initState() {
+    _dropDownMenuItems = getDropDownMenuItems();
+    _currentCity = _dropDownMenuItems[0].value!;
+    super.initState();
+  }
+
+  List<DropdownMenuItem<String>> getDropDownMenuItems() {
+    List<DropdownMenuItem<String>> items = [];
+    for (String city in _cities) {
+      // here we are creating the drop down menu items, you can customize the item right here
+      // but I'll just use a simple text for this
+      items.add(new DropdownMenuItem(
+          value: city,
+          child: new Text(city)
+      ));
+    }
+    return items;
+  }
+
  
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args){
     if(args.value is PickerDateRange){
@@ -21,45 +50,110 @@ class _CalendarModalState extends State<CalendarModal> {
       });
     }
   }
+
+   void changedDropDownItem(String selectedCity) {    
+     print(selectedCity);
+    setState(() {
+      _currentCity = selectedCity;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Container(
+    return     
+    Container(
       padding: EdgeInsets.all(8),
       height: size.height*0.8,
-      child: Column(
-        children: [
-          SizedBox(height: 15,),
-          Text("Solicitud requisición de víaticos",style: TextStyle(fontSize: 20)),
-          Divider(height: 20,  thickness: 2,color: Colors.grey,),
-          SizedBox(height: 15,),
+      child:       
+      SingleChildScrollView( child:
+      Column(
+        children: [                    
+          ExpansionTile(title: Text("Generar nueva solicitud de requisición de víaticos",style: TextStyle(fontSize: 17),textAlign: TextAlign.center,),
+          children: [
+            Column(children: [
+             SizedBox(height: 15,),
           Text('Seleccione la fecha de inicio y de fin del viaje'),
           SizedBox(height: 10,),
           SfDateRangePicker(
             onSelectionChanged: _onSelectionChanged,
             selectionMode: DateRangePickerSelectionMode.range,
           ),
-          Expanded(
-              child:Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(                  
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center ,
-                    crossAxisAlignment: CrossAxisAlignment.center 
-                    ,children: [                     
-                    TextButton(
-                    child: Text("Guardar",style: TextStyle(fontSize: 19),),
-                    onPressed: () {print(_initDate); print(_endDate);},
-                    ),                                
-                  TextButton(
-                    child: Text("Cancelar",style: TextStyle(fontSize: 19),),
-                    onPressed: () { Navigator.pop(context);},
-                  ),
-                  ],)
-                ),
-              ) )
+           Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+          child: TextFormField(           
+            decoration: InputDecoration(                    
+            labelText: 'Ingrese Monto de víaticos',                     
+            labelStyle: TextStyle(fontSize: 15,color: Colors.black),                                    
+          ),
+          controller: Monto,
+          style: TextStyle(color: Colors.black),   
+           inputFormatters: [
+    ThousandsFormatter(allowFraction: true)
+  ],
+     keyboardType: TextInputType.number,       
+        )),  
+        SizedBox(height: 20,),                
+          DropdownButton(
+              hint: Text('Seleccione una agencia'),
+              dropdownColor: Colors.white,
+              icon: Icon(Icons.arrow_drop_down),
+              iconSize: 36,
+              isExpanded: true,
+              value: _currentCity,
+              items: _dropDownMenuItems,
+              onChanged: (newValue) {
+                changedDropDownItem(newValue.toString());
+              },
+               
+            ),    
+            SizedBox(height: 20,),                    
+          Requsion_('Crear nueva requisición',0,size,Colors.green),   
+          SizedBox(height: 5,),                
+          ],)                                 
+          ],),              
+          SizedBox(height: 20,),                
+          Requsion_('Visualizar historial de requisiciones',1,size,Colors.black),
+          Requsion_('Visualizar requisiciones de los ultimos 30 días',1,size,Colors.black)                 
         ],
-      ),
+      ),)
     );
   }
+
+  Widget Requsion_(String Mensajes, int opcion,final size,Color color_)
+  {
+    return  Container(                    
+                            alignment: Alignment.center,                            
+                            child: 
+                            ButtonTheme(
+                                  
+                                  minWidth: MediaQuery.of(context).size.width * 0.9,          
+                        child:    OutlineButton(                                      
+                                 borderSide: BorderSide(color: color_,width: 1),                                                           
+                                onPressed: ()  { 
+                                    if(opcion == 0)
+                                    {
+                                        //openModal();
+                                    }else{
+
+                                      Navigator.push<void>(
+                                        context,
+                                        MaterialPageRoute<void>(
+                                          builder: (BuildContext context) => VisualizarRequisiciones(),
+                                        ),
+                                      );
+                                    }
+                                 },
+                                child: Text(
+                                  Mensajes,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ))),
+                          );
+  }  
+
+
 }

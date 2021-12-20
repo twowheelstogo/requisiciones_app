@@ -42,6 +42,7 @@ dependencies:
   getwidget: ^2.0.4
   date_format: ^2.0.4
   syncfusion_flutter_datepicker: ^19.4.38
+  pattern_formatter: ^2.0.0
 
 dev_dependencies:
   flutter_test:

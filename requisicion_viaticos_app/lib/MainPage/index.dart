@@ -89,10 +89,10 @@ class MainPage_ extends State<MainPage> {
                             style: TextStyle(fontSize: 17),
                                  ),
                           Divider(height: 20,  thickness: 3,color: Colors.black,),
-                          SizedBox(height: 20,),
-                          Container(child: Resume(1,1,0),
-                          width: MediaQuery.of(context).size.width * 0.95,
-                          )  ,
+                          // SizedBox(height: 20,),
+                          // Container(child: Resume(1,1,0),
+                          // width: MediaQuery.of(context).size.width * 0.95,
+                          // )  ,
                                       SizedBox(height: 20,),                        
                           Solicitud()
                         ],)
