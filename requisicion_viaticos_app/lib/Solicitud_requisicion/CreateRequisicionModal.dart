@@ -71,6 +71,8 @@ Future<String> getDPI() async {
     }
   }
 
+  
+
 
   @override
   Widget build(BuildContext context) {
@@ -87,35 +89,29 @@ Future<String> getDPI() async {
           children: [
             Column(children: [                   
           //aqui va
+          Text('Ingrese una agencia'),
             SingleChildScrollView(child: 
-            AutoCompleteTextField(                        
-            controller: _suggestionTextFieldControler,
-            suggestions: Agencias,
-            style: TextStyle(fontSize: 17),
-            decoration: InputDecoration(              
-              labelText: 'Ingrese agencia',                    
-              labelStyle: TextStyle(fontSize: 15,color: Colors.black),     
+            Autocomplete(              
+              optionsBuilder: (TextEditingValue textEditingValue) {
+                if (textEditingValue.text == '') {
+                  return const Iterable<String>.empty();
+                }else{
+                    List<String> matches = <String>[];
+                    matches.addAll(Agencias);
+                    matches.retainWhere((s){
+                      return s.toLowerCase().contains(textEditingValue.text.toLowerCase());
+                    });
+                    return matches;
+                }
+              },
+              onSelected: (String selection) {
+                  setState(() {
+                    ID_AIRTABLE = Diccionario[selection].toString();
+                  });
+                  print(Diccionario[selection].toString());
+              },
+            )
             ),
-            itemFilter: (item,query)
-            {
-              return item.toString().toLowerCase().startsWith(query.toLowerCase());
-            },
-            itemSorter: (a,b) {
-              return a.toString().compareTo(b.toString());
-            },
-            itemSubmitted: (item) {
-              _suggestionTextFieldControler.text = item.toString();   
-              print('AQUIIIIIIIIII');
-            },            
-            itemBuilder: (context,item){
-              return Container(
-                padding: EdgeInsets.all(20),
-                child: Row(children: [
-                  Text(item.toString(),style: TextStyle(color: Colors.black),)
-                ],),
-              );
-            },
-            ),),
                Container(
             width: MediaQuery.of(context).size.width * 0.9,
           child: TextFormField(           
