@@ -18,11 +18,7 @@ class Solicitud_ extends State<Solicitud> {
     TextEditingController FechaFin = TextEditingController();
     TextEditingController Monto = TextEditingController();
     String Agencia = "";
-
-    Future<void> GenerarNuevaRequisicion () async {
-
-    }
-     
+         
 
    @override  
   Widget build(BuildContext context) {

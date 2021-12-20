@@ -32,7 +32,7 @@ class Autenticacion
       if (Decoded["records"].length > 0) {        
         var id = Decoded["records"][0]["fields"]["No_DOCUMENTO"];
         var Nombre = Decoded["records"][0]["fields"]["NOMBRE"];
-        var ID_AIRTABLE = Decoded["records"][0]["record_id"];
+        var ID_AIRTABLE = Decoded["records"][0]["id"];
         var Genero = Decoded["records"][0]["GENERO"];
         var Foto = Decoded["records"][0]["fields"]["FOTO_PERFIL"][0]["url"];
         storage_(Nombre.toString(), id.toString(), ID_AIRTABLE.toString(),Foto.toString(),Genero.toString());

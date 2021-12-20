@@ -33,11 +33,7 @@ class _UserComponentState extends State<UserComponent> {
 
     getConstant("DPI").then((val) => setState(() {
           DPI = val;
-        }));
-
-    getConstant("IdAIRTABLE").then((val) => setState(() {
-          ID = val;
-        }));  
+        })); 
          
   }
 

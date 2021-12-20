@@ -5,6 +5,42 @@ import 'package:dropdown_search/dropdown_search.dart';
 
 class ListadoAgencias{
   
+   Future<http.Response> crearRequisicion(String Inicio, String Fin,double Monto,String ID_AGENCIA,String ID_USUARIO)async{
+       
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': "Bearer $Token"
+    };
+
+    
+
+    Map<String, dynamic> body = {
+      "FECHA_INICIO_VIAJE" : Inicio,
+      "FECHA_RETORNO_VIAJE" : Fin,
+      "MONTO_VIATICOS" : Monto,
+      "AGENCIA" : [ID_AGENCIA],
+      "STATUS" : "PENDIENTE",      
+      "COLABORADORES": [ID_USUARIO]
+    };
+
+    final bodyEncoded = json.encode({
+      "records": [
+        {"fields": body}
+      ]
+    });
+
+     String url = urlApi + 'REQUISICION_VIATICOS';
+    print(bodyEncoded);
+    try {
+      final response = await http.post(Uri.parse(url),headers: headers,body: (bodyEncoded));
+      return response;
+    }on http.ClientException catch (e) {
+      throw(e.message);
+    }
+  }
+
+
   Future<List> Agencias() async
   {    
     List<String> Agencias = [];

@@ -6,6 +6,7 @@ import 'package:pattern_formatter/pattern_formatter.dart';
 import 'package:requisicion_viaticos_app/Components/Spinner.dart';
 import 'package:requisicion_viaticos_app/Solicitud_requisicion/Metodos.dart';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CalendarModal extends StatefulWidget {
   @override
@@ -16,6 +17,7 @@ class _CalendarModalState extends State<CalendarModal> {
   String _initDate ="";
   String _endDate ="";
   String selectedValue = "";
+  String ID_USUARIO = "";
   bool _selected = false;
   TextEditingController Monto = TextEditingController();
   List<String> Agencias = [];  
@@ -44,20 +46,21 @@ class _CalendarModalState extends State<CalendarModal> {
 }
 
 
-Future<String> getDPI() async {    
-    String DPI = '';    
+ Future<String> getConstant(String msg) async {
+    final prefs = await SharedPreferences.getInstance();
+    String DPI = '';
+    final res = prefs.getString(msg);
+    DPI = '$res';
     return DPI;
   }
 
-  _CalendarModalState() {
-
-   getDPI().then((val) => setState(() {
+  _CalendarModalState() {       
+   getConstant("IdAIRTABLE").then((val) => setState(() {
+        ID_USUARIO = val;
               ObtenerAgencias().then((val2) => setState(() {
-          Agencias = val2[0];
-          Diccionario = val2[1];          
-        }));
-
-
+                Agencias = val2[0];
+                Diccionario = val2[1];          
+              }));
         }));
   }  
  
@@ -69,6 +72,36 @@ Future<String> getDPI() async {
         _selected =true;
       });
     }
+  }
+
+  void CrearRequisicionViaticos() async{
+    
+    if(_initDate.length > 0 && _endDate.length > 0 && Monto.text.length > 0 && ID_AIRTABLE.length > 0)
+    {
+    showDialog(context: context, builder: (_)=>Spinner(),barrierDismissible: false);  
+    final Response = await ListadoAgencias().crearRequisicion(_initDate, _endDate, double.parse(Monto.text.replaceAll(',', '')),ID_AIRTABLE,ID_USUARIO);  
+    Navigator.of(context).pop(true);
+
+    if(Response.statusCode == 200)
+    {
+         final _snackbar = SnackBar(content: Text('Requisición generada exitosamente.'));                  
+         ScaffoldMessenger.of(context).showSnackBar(_snackbar);
+         Monto.clear();
+         _initDate = "";
+         _endDate = "";         
+         ID_AIRTABLE = "";
+    }        
+    else
+  {
+        final _snackbar = SnackBar(content: Text('Ha ocurrido un error, intente nuevamente.'));
+         ScaffoldMessenger.of(context).showSnackBar(_snackbar);
+  }
+    }
+    else{
+      final _snackbar = SnackBar(content: Text('Debe de ingresar todos los campos.'));
+         ScaffoldMessenger.of(context).showSnackBar(_snackbar);
+    }
+    
   }
 
   
@@ -88,10 +121,14 @@ Future<String> getDPI() async {
           ExpansionTile(title: Text("Generar nueva solicitud de requisición de víaticos",style: TextStyle(fontSize: 17),textAlign: TextAlign.center,),
           children: [
             Column(children: [                   
-          //aqui va
-          Text('Ingrese una agencia'),
-            SingleChildScrollView(child: 
-            Autocomplete(              
+          //aqui va                    
+            SingleChildScrollView(child:  
+            
+            Column(children: [
+              SizedBox(height: 30,),
+              Container(alignment: Alignment.topLeft,height: 19,
+              child: Text('Ingrese Agencia a visitar',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),)             ,
+            Autocomplete(                      
               optionsBuilder: (TextEditingValue textEditingValue) {
                 if (textEditingValue.text == '') {
                   return const Iterable<String>.empty();
@@ -110,15 +147,16 @@ Future<String> getDPI() async {
                   });
                   print(Diccionario[selection].toString());
               },
-            )
+            )  
+            ],)                                    
+            //fin 
             ),
+            SizedBox(height: 20,),
+            Container(alignment: Alignment.topLeft,height: 19,
+              child: Text('Ingrese Monto de víaticos',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),)             ,
                Container(
             width: MediaQuery.of(context).size.width * 0.9,
-          child: TextFormField(           
-            decoration: InputDecoration(                    
-            labelText: 'Ingrese Monto de víaticos',                     
-            labelStyle: TextStyle(fontSize: 15,color: Colors.black),                                    
-          ),
+          child: TextFormField(                      
           controller: Monto,
           style: TextStyle(color: Colors.black),   
            inputFormatters: [
@@ -160,7 +198,7 @@ Future<String> getDPI() async {
                                 onPressed: ()  { 
                                     if(opcion == 0)
                                     {
-                                        //openModal();
+                                        CrearRequisicionViaticos();
                                     }else{
 
                                       Navigator.push<void>(
