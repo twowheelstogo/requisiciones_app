@@ -3,6 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:requisicion_viaticos_app/VisualizarRequisiciones/index.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:pattern_formatter/pattern_formatter.dart';
+import 'package:requisicion_viaticos_app/Components/Spinner.dart';
+import 'package:requisicion_viaticos_app/Solicitud_requisicion/Metodos.dart';
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 
 class CalendarModal extends StatefulWidget {
   @override
@@ -12,24 +15,51 @@ class CalendarModal extends StatefulWidget {
 class _CalendarModalState extends State<CalendarModal> {
   String _initDate ="";
   String _endDate ="";
+  String selectedValue = "";
   bool _selected = false;
   TextEditingController Monto = TextEditingController();
+  List<String> Agencias = [];  
+  Map<String,String> Diccionario = {};
+  var _suggestionTextFieldControler = new TextEditingController();
 
   String dropdownvalue = 'Seleccione una opción';   
-  var items = [    
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-  ];
-
+  String ID_AIRTABLE = "";
+  
    @override
   void initState() {      
+    _CalendarModalState();
     super.initState();
   }
 
-  
+  Future<List> ObtenerAgencias() async {
+        showDialog(
+        context: context,
+        builder: (context) => Spinner(),
+        barrierDismissible: false);
+    
+    final lst = await ListadoAgencias().Agencias();             
+     Navigator.of(context).pop(true);      
+        
+    return lst;
+}
+
+
+Future<String> getDPI() async {    
+    String DPI = '';    
+    return DPI;
+  }
+
+  _CalendarModalState() {
+
+   getDPI().then((val) => setState(() {
+              ObtenerAgencias().then((val2) => setState(() {
+          Agencias = val2[0];
+          Diccionario = val2[1];          
+        }));
+
+
+        }));
+  }  
  
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args){
     if(args.value is PickerDateRange){
@@ -55,15 +85,38 @@ class _CalendarModalState extends State<CalendarModal> {
         children: [                    
           ExpansionTile(title: Text("Generar nueva solicitud de requisición de víaticos",style: TextStyle(fontSize: 17),textAlign: TextAlign.center,),
           children: [
-            Column(children: [
-             SizedBox(height: 15,),
-          Text('Seleccione la fecha de inicio y de fin del viaje'),
-          SizedBox(height: 10,),
-          SfDateRangePicker(
-            onSelectionChanged: _onSelectionChanged,
-            selectionMode: DateRangePickerSelectionMode.range,
-          ),
-           Container(
+            Column(children: [                   
+          //aqui va
+            SingleChildScrollView(child: 
+            AutoCompleteTextField(                        
+            controller: _suggestionTextFieldControler,
+            suggestions: Agencias,
+            style: TextStyle(fontSize: 17),
+            decoration: InputDecoration(              
+              labelText: 'Ingrese agencia',                    
+              labelStyle: TextStyle(fontSize: 15,color: Colors.black),     
+            ),
+            itemFilter: (item,query)
+            {
+              return item.toString().toLowerCase().startsWith(query.toLowerCase());
+            },
+            itemSorter: (a,b) {
+              return a.toString().compareTo(b.toString());
+            },
+            itemSubmitted: (item) {
+              _suggestionTextFieldControler.text = item.toString();   
+              print('AQUIIIIIIIIII');
+            },            
+            itemBuilder: (context,item){
+              return Container(
+                padding: EdgeInsets.all(20),
+                child: Row(children: [
+                  Text(item.toString(),style: TextStyle(color: Colors.black),)
+                ],),
+              );
+            },
+            ),),
+               Container(
             width: MediaQuery.of(context).size.width * 0.9,
           child: TextFormField(           
             decoration: InputDecoration(                    
@@ -74,32 +127,16 @@ class _CalendarModalState extends State<CalendarModal> {
           style: TextStyle(color: Colors.black),   
            inputFormatters: [
     ThousandsFormatter(allowFraction: true)
-  ],
+      ],
      keyboardType: TextInputType.number,       
-        )),  
-        SizedBox(height: 20,),                
-          DropdownButton(
-              hint: Text(dropdownvalue),
-              dropdownColor: Colors.white,
-              icon: Icon(Icons.arrow_drop_down),
-              iconSize: 36,
-              isExpanded: true,
-               //value: dropdownvalue,
-                items: items.map((String items) {
-                return DropdownMenuItem(
-                  value: items,
-                  child: Text(items),
-                );
-              }).toList(),
-              // After selecting the desired option,it will
-              // change button value to selected value
-              onChanged: (String? newValue) { 
-                setState(() {
-                  dropdownvalue = newValue!;
-                });
-              },                             
-            ),    
-            SizedBox(height: 20,),                    
+        )),
+            SizedBox(height: 40,),
+            Text('Seleccione la fecha de inicio y de fin del viaje',style: TextStyle(fontSize: 13,color: Colors.black),                                    ),
+          Divider(height: 20,  thickness: 1,color: Colors.grey),
+          SfDateRangePicker(
+            onSelectionChanged: _onSelectionChanged,
+            selectionMode: DateRangePickerSelectionMode.range,
+          ),            
           Requsion_('Crear nueva requisición',0,size,Colors.green),   
           SizedBox(height: 5,),                
           ],)                                 

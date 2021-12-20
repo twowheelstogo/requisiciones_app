@@ -84,7 +84,7 @@ class _UserComponentState extends State<UserComponent> {
                   dense: true,
                   title: Text(
                     Nombre,
-                    style: Theme.of(context).textTheme.bodyText2,
+                    //style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ),
                 value: 'PROFILE'),
@@ -94,7 +94,7 @@ class _UserComponentState extends State<UserComponent> {
                   leading: Icon(Icons.exit_to_app),
                   title: Text(
                     'Cerrar Sesión',
-                    style: Theme.of(context).textTheme.bodyText2,
+                    //style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ),
                 value: 'SIGNOUT'),
