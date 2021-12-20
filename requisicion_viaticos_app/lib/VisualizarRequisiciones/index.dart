@@ -20,9 +20,13 @@ class VisualizarRequisiciones extends StatefulWidget {
 class VisualizarRequisiciones_ extends State<VisualizarRequisiciones> {
 
   List<Historial> _HistorialRequisiciones_ = [];
-
+  TextEditingController Estado = TextEditingController();
+  TextEditingController Agencia = TextEditingController();
+  
   void initState() {    
     VisualizarRequisiciones_();
+    Estado.text = "";
+    Agencia.text = "";
     super.initState();
   }
 
@@ -52,6 +56,19 @@ Future<List<Historial>> HistorialRequisiciones_() async
     Navigator.of(context).pop(true);                 
     return lst;
   }
+
+  List<Historial> ListaFiltrada() {
+    String tmp1 = Estado.text.toString();
+    String tmp2 = Agencia.text.toString();
+    List<Historial> newLst = _HistorialRequisiciones_
+        .where((o) => o.Status.toLowerCase().contains(tmp1.toLowerCase()))
+        .toList();
+    List<Historial> newLst2 = newLst
+        .where((o) => o.Agencias.toLowerCase().contains(tmp2.toLowerCase()))
+        .toList();    
+    return newLst2;
+  }
+
   
   
    @override  
@@ -74,12 +91,36 @@ Future<List<Historial>> HistorialRequisiciones_() async
       body: SingleChildScrollView(
         child: Container(alignment: Alignment.bottomCenter,child: Column(children: [  
         SizedBox(height: 10,)      ,
-        for(var tmp in _HistorialRequisiciones_)
+        Container(
+                        margin: const EdgeInsets.only(top: 10),
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: TextFieldDinamico__(
+                            Estado, 'Busqueda por Status')),
+        Container(
+                        margin: const EdgeInsets.only(top: 10),
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: TextFieldDinamico__(
+                            Agencia, 'Busqueda por Agencia')),
+        for(var tmp in ListaFiltrada())
             PermisosRequestCard(tmp)
       ],),),
       )
     );    
-  }  
+  } 
+
+
+  Widget TextFieldDinamico__(
+      TextEditingController controlador, String Label) {
+    return TextField(
+      controller: controlador,
+      decoration: InputDecoration(                    
+                      labelText:Label,                     
+                      labelStyle: TextStyle(fontSize: 17,color: Colors.black),                                    
+                ),    
+    );
+  } 
   
 
 }
