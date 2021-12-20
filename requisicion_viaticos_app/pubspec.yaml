@@ -45,6 +45,7 @@ dependencies:
   pattern_formatter: ^2.0.0
   dropdown_search: ^2.0.1
   autocomplete_textfield: ^1.7.3
+  accordion: ^2.1.2
 
 dev_dependencies:
   flutter_test:

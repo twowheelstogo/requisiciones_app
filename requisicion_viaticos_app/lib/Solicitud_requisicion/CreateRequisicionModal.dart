@@ -103,9 +103,7 @@ class _CalendarModalState extends State<CalendarModal> {
     }
     
   }
-
   
-
 
   @override
   Widget build(BuildContext context) {
@@ -119,16 +117,14 @@ class _CalendarModalState extends State<CalendarModal> {
       Column(
         children: [                    
           ExpansionTile(title: Text("Generar nueva solicitud de requisición de víaticos",style: TextStyle(fontSize: 17),textAlign: TextAlign.center,),
+          initiallyExpanded: true,
           children: [
-            Column(children: [                   
-          //aqui va                    
-            SingleChildScrollView(child:  
-            
-            Column(children: [
-              SizedBox(height: 30,),
-              Container(alignment: Alignment.topLeft,height: 19,
-              child: Text('Ingrese Agencia a visitar',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),)             ,
-            Autocomplete(                      
+              SingleChildScrollView(
+              child: Column(children: [
+                SizedBox(height: 20,),
+                Container( alignment: Alignment.topLeft,height: 19,
+              child: Text('Ingrese Agencia a visitar',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),),                
+                Autocomplete(                      
               optionsBuilder: (TextEditingValue textEditingValue) {
                 if (textEditingValue.text == '') {
                   return const Iterable<String>.empty();
@@ -147,33 +143,31 @@ class _CalendarModalState extends State<CalendarModal> {
                   });
                   print(Diccionario[selection].toString());
               },
-            )  
-            ],)                                    
-            //fin 
             ),
             SizedBox(height: 20,),
-            Container(alignment: Alignment.topLeft,height: 19,
-              child: Text('Ingrese Monto de víaticos',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),)             ,
-               Container(
-            width: MediaQuery.of(context).size.width * 0.9,
-          child: TextFormField(                      
-          controller: Monto,
-          style: TextStyle(color: Colors.black),   
-           inputFormatters: [
-    ThousandsFormatter(allowFraction: true)
-      ],
-     keyboardType: TextInputType.number,       
-        )),
-            SizedBox(height: 40,),
-            Text('Seleccione la fecha de inicio y de fin del viaje',style: TextStyle(fontSize: 13,color: Colors.black),                                    ),
+            Container( alignment: Alignment.topLeft,height: 19,
+              child: Text('Ingrese Monto de víaticos',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),),
+              Container(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                    child: TextFormField(                      
+                    controller: Monto,
+                    style: TextStyle(color: Colors.black),   
+                    inputFormatters: [
+              ThousandsFormatter(allowFraction: true)
+                ],
+              keyboardType: TextInputType.number,       
+                  )),
+              SizedBox(height: 30),
+              
+          Text('Seleccione la fecha de inicio y de fin del viaje',style: TextStyle(fontSize: 13,color: Colors.black),                                    ),
           Divider(height: 20,  thickness: 1,color: Colors.grey),
           SfDateRangePicker(
             onSelectionChanged: _onSelectionChanged,
             selectionMode: DateRangePickerSelectionMode.range,
           ),            
-          Requsion_('Crear nueva requisición',0,size,Colors.green),   
-          SizedBox(height: 5,),                
-          ],)                                 
+          Requsion_('Crear nueva requisición',0,size,Colors.green),               
+              ],),
+            )                                
           ],),              
           SizedBox(height: 20,),    
           ExpansionTile(title: Text("Control de requisiciones de víacticos",style: TextStyle(fontSize: 17),textAlign: TextAlign.center,),
@@ -219,6 +213,4 @@ class _CalendarModalState extends State<CalendarModal> {
                                 ))),
                           );
   }  
-
-
 }
