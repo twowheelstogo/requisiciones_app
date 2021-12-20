@@ -6,8 +6,10 @@ import 'package:requisicion_viaticos_app/VisualizarRequisiciones/index.dart';
 
 
 class Solicitud extends StatefulWidget {
-
-  const Solicitud({Key? key}) : super(key: key);
+    
+  final Map<String,String> Diccionario;  
+  final List<String> Agencias;  
+  const Solicitud(this.Diccionario,this.Agencias,{Key? key}) : super(key: key);
   Solicitud_ createState() => Solicitud_();
 }
 
@@ -31,7 +33,7 @@ class Solicitud_ extends State<Solicitud> {
       Container(        
         child: Column(
           children: [            
-            CalendarModal(),            
+            CalendarModal(widget.Diccionario,widget.Agencias),            
           ],
         ),
       )               

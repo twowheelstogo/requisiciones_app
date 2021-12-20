@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:requisicion_viaticos_app/Components/Spinner.dart';
 import 'package:requisicion_viaticos_app/Components/drawer.dart';
 import 'package:requisicion_viaticos_app/MainPage/Resume.dart';
 import 'package:requisicion_viaticos_app/MainPage/userComponent.dart';
 import 'package:intl/intl.dart';
+import 'package:requisicion_viaticos_app/Solicitud_requisicion/Metodos.dart';
 import 'package:requisicion_viaticos_app/Solicitud_requisicion/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,6 +18,8 @@ class MainPage_ extends State<MainPage> {
   final today = new DateTime.now();
   String Nombre = "";
   String Genero = "";
+  Map<String,String> Diccionario = {};
+  List<String> Agencias = [];  
 
   void initState() {    
     MainPage_();
@@ -36,15 +40,33 @@ class MainPage_ extends State<MainPage> {
         }));
     getConstant("Genero").then((val) => setState(() {
           Genero = ConvertirNombre(val);
+
+          ObtenerAgencias().then((val2) => setState(() {
+            Agencias = val2[0];
+            Diccionario=val2[1];
+        }));
+
+
         }));
   }
+
+  Future<List> ObtenerAgencias() async {
+        showDialog(
+        context: context,
+        builder: (context) => Spinner(),
+        barrierDismissible: false);
+    
+    final lst = await ListadoAgencias().Agencias();             
+     Navigator.of(context).pop(true);              
+    return lst;
+}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
        backgroundColor: Colors.white,
        
-      drawer: DrawerComponent(),
+      drawer: DrawerComponent(Diccionario),
       appBar: new AppBar(            
             backgroundColor: Colors.white,
             iconTheme: IconThemeData(color: Colors.black),
@@ -94,7 +116,7 @@ class MainPage_ extends State<MainPage> {
                           // width: MediaQuery.of(context).size.width * 0.95,
                           // )  ,
                                       SizedBox(height: 20,),                        
-                          Solicitud()
+                          Solicitud(Diccionario,Agencias)
                         ],)
                             ),                                                
                         ]

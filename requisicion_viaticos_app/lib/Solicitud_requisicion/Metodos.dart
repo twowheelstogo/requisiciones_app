@@ -2,8 +2,16 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:requisicion_viaticos_app/config/constants.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ListadoAgencias{
+
+  void Storage(Map<String,String> diccionario) async
+  {
+    final prefs = await SharedPreferences.getInstance();
+    var s = json.encode(diccionario);
+    prefs.setString('Diccionario', s.toString());
+  }
   
    Future<http.Response> crearRequisicion(String Inicio, String Fin,double Monto,String ID_AGENCIA,String ID_USUARIO)async{
        

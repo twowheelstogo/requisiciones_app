@@ -1,13 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:requisicion_viaticos_app/VisualizarRequisiciones/index.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
-class DrawerComponent extends StatefulWidget {
+class DrawerComponent extends StatefulWidget {  
+  final Map<String,String> Diccionario;
+
+  DrawerComponent(this.Diccionario,{Key ? key}) : super(key: key);
   @override
   _DrawerComponentState createState() => _DrawerComponentState();
 }
 
 class _DrawerComponentState extends State<DrawerComponent> {
+  
+  String DPI = "";
+
+ void initState() {    
+    _DrawerComponentState();
+    super.initState();
+  }
+  
+  Future<String> getConstant(String msg) async {
+    final prefs = await SharedPreferences.getInstance();
+    String DPI = '';
+    final res = prefs.getString(msg);
+    DPI = '$res';
+    return DPI;
+  }
+
+  _DrawerComponentState()
+  {
+     getConstant("DPI").then((val) => setState(() {
+          DPI = val;        
+      }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +70,7 @@ class _DrawerComponentState extends State<DrawerComponent> {
           Navigator.push<void>(
         context,
         MaterialPageRoute<void>(
-          builder: (BuildContext context) => VisualizarRequisiciones(),
+          builder: (BuildContext context) => VisualizarRequisiciones(widget.Diccionario,DPI),
         ),
       );                    
         },

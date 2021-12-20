@@ -54,7 +54,8 @@ class _UserComponentState extends State<UserComponent> {
     prefs.remove("usuario");    
     prefs.remove("DPI");
     prefs.remove("IdAIRTABLE");   
-    prefs.remove("urlFoto");  
+    prefs.remove("urlFoto"); 
+    prefs.remove('Diccionario') ;
   }
  
  

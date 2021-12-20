@@ -9,6 +9,13 @@ import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CalendarModal extends StatefulWidget {
+  
+    final Map<String,String> Diccionario;  
+    final List<String> Agencias;  
+  
+
+  const CalendarModal(this.Diccionario,this.Agencias,{Key ? key}) : super(key: key);
+  
   @override
   _CalendarModalState createState() => _CalendarModalState();
 }
@@ -20,8 +27,7 @@ class _CalendarModalState extends State<CalendarModal> {
   String ID_USUARIO = "";
   bool _selected = false;
   TextEditingController Monto = TextEditingController();
-  List<String> Agencias = [];  
-  Map<String,String> Diccionario = {};
+  
   var _suggestionTextFieldControler = new TextEditingController();
 
   String dropdownvalue = 'Seleccione una opción';   
@@ -32,19 +38,7 @@ class _CalendarModalState extends State<CalendarModal> {
     _CalendarModalState();
     super.initState();
   }
-
-  Future<List> ObtenerAgencias() async {
-        showDialog(
-        context: context,
-        builder: (context) => Spinner(),
-        barrierDismissible: false);
-    
-    final lst = await ListadoAgencias().Agencias();             
-     Navigator.of(context).pop(true);      
-        
-    return lst;
-}
-
+  
 
  Future<String> getConstant(String msg) async {
     final prefs = await SharedPreferences.getInstance();
@@ -56,11 +50,7 @@ class _CalendarModalState extends State<CalendarModal> {
 
   _CalendarModalState() {       
    getConstant("IdAIRTABLE").then((val) => setState(() {
-        ID_USUARIO = val;
-              ObtenerAgencias().then((val2) => setState(() {
-                Agencias = val2[0];
-                Diccionario = val2[1];          
-              }));
+        ID_USUARIO = val;             
         }));
   }  
  
@@ -130,7 +120,7 @@ class _CalendarModalState extends State<CalendarModal> {
                   return const Iterable<String>.empty();
                 }else{
                     List<String> matches = <String>[];
-                    matches.addAll(Agencias);
+                    matches.addAll(widget.Agencias);
                     matches.retainWhere((s){
                       return s.toLowerCase().contains(textEditingValue.text.toLowerCase());
                     });
@@ -139,9 +129,9 @@ class _CalendarModalState extends State<CalendarModal> {
               },
               onSelected: (String selection) {
                   setState(() {
-                    ID_AIRTABLE = Diccionario[selection].toString();
+                    ID_AIRTABLE = widget.Diccionario[selection].toString();
                   });
-                  print(Diccionario[selection].toString());
+                  print(widget.Diccionario[selection].toString());
               },
             ),
             SizedBox(height: 20,),
@@ -198,7 +188,7 @@ class _CalendarModalState extends State<CalendarModal> {
                                       Navigator.push<void>(
                                         context,
                                         MaterialPageRoute<void>(
-                                          builder: (BuildContext context) => VisualizarRequisiciones(),
+                                          builder: (BuildContext context) => VisualizarRequisiciones(widget.Diccionario,ID_USUARIO),
                                         ),
                                       );
                                     }

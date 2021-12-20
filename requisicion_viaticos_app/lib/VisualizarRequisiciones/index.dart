@@ -1,68 +1,85 @@
 
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:requisicion_viaticos_app/Components/Spinner.dart';
 import 'package:requisicion_viaticos_app/MainPage/index.dart';
+import 'package:requisicion_viaticos_app/VisualizarRequisiciones/CardRequisicion.dart';
+import 'package:requisicion_viaticos_app/VisualizarRequisiciones/Metodos.dart';
 
 class VisualizarRequisiciones extends StatefulWidget {
 
-  const VisualizarRequisiciones({Key? key}) : super(key: key);
+  final Map<String,String> Diccionario;
+  final String ID_USUARIO;
+
+  const VisualizarRequisiciones(this.Diccionario,this.ID_USUARIO,{Key ? key}) : super(key: key);
+
+  @override
   VisualizarRequisiciones_ createState() => VisualizarRequisiciones_();
 }
 
 class VisualizarRequisiciones_ extends State<VisualizarRequisiciones> {
 
-  void Regresar(context) {
-    Navigator.push<void>(
-      context,
-      MaterialPageRoute<void>(
-        builder: (BuildContext context) => MainPage(),
-      ),
-    );
+  List<Historial> _HistorialRequisiciones_ = [];
+
+  void initState() {    
+    VisualizarRequisiciones_();
+    super.initState();
   }
+
+  VisualizarRequisiciones_()
+  {
+        getConstant("usuario").then((val) => setState(() {
+
+          HistorialRequisiciones_().then((val2) => setState(() {                                      
+            _HistorialRequisiciones_ = val2; 
+          }));
+
+        }));
+  }
+
+   Future<String> getConstant(String msg) async {    
+    String DPI = '';    
+    return DPI;
+  }
+
+Future<List<Historial>> HistorialRequisiciones_() async
+  {
+     showDialog(
+        context: context,
+        builder: (context) => Spinner(),
+        barrierDismissible: false);
+    List<Historial> lst = await HistorialRequisiciones().ObtenerHistorial(widget.ID_USUARIO,widget.Diccionario); 
+    Navigator.of(context).pop(true);                 
+    return lst;
+  }
+  
+  
    @override  
   Widget build(BuildContext context) {
     return 
-    Container(
-    alignment: Alignment.center,
-    child:     
-    Column(children: [      
-      Text('HOLAS') ,
-      Regresar_(context) 
-    ],)
-    );
+    Scaffold(
+      appBar: new AppBar(
+        title: Text("Historial de requisiciones"),
+        centerTitle: true,
+        leading: 
+        Container(          
+          child:
+        IconButton(
+          onPressed: () {
+                 Navigator.pop(context);
+          },
+           icon: Icon(Icons.arrow_back),
+          ))
+      ),
+      body: SingleChildScrollView(
+        child: Container(alignment: Alignment.bottomCenter,child: Column(children: [  
+        SizedBox(height: 10,)      ,
+        for(var tmp in _HistorialRequisiciones_)
+            PermisosRequestCard(tmp)
+      ],),),
+      )
+    );    
   }  
-
-
-  Widget Regresar_(context) {
-    return Column(
-      children: [
-        Container(
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-                padding: EdgeInsets.only(right: 0.0),
-                child: ButtonTheme(
-                  minWidth: 100.0,
-                  height: 45.0,
-                  child: RaisedButton(
-                    textColor: HexColor('#535461'),
-                    color: HexColor("#FFFFFF"),
-                    child: Text(
-                      "Regresar",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: 'Lato',
-                        color: HexColor("#535461"),
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    onPressed: () => Regresar(context),
-                    shape: new RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(40.0),
-                    ),
-                  ),
-                )))
-      ],
-    );
-  }
+  
 
 }

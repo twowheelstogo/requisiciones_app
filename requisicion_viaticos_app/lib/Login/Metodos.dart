@@ -16,7 +16,7 @@ class Autenticacion
     prefs.setString('DPI', id);
     prefs.setString('IdAIRTABLE', ID_AIRTABLE);
     prefs.setString('urlFoto', urlFoto);
-    prefs.setString('Genero', Genero);
+    prefs.setString('Genero', Genero);    
   }
 
 
