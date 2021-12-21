@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:requisicion_viaticos_app/VisualizarRequisiciones/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/index.dart';
 
 class DrawerComponent extends StatefulWidget {  
   final Map<String,String> Diccionario;
@@ -65,12 +65,24 @@ class _DrawerComponentState extends State<DrawerComponent> {
             onTap: () => Navigator.pop(context),
           ),
       ListTile(
-        title: Text('Listado de requisiciones'),
+        title: Text('Historial de requisiciones'),
         onTap: () {
           Navigator.push<void>(
         context,
         MaterialPageRoute<void>(
           builder: (BuildContext context) => VisualizarRequisiciones(widget.Diccionario,DPI),
+        ),
+      );                    
+        },
+        leading: Icon(Icons.assignment_rounded),
+      ),
+      ListTile(
+        title: Text('Requisiciones del ultimó mes'),
+        onTap: () {
+          Navigator.push<void>(
+        context,
+        MaterialPageRoute<void>(
+          builder: (BuildContext context) => VisualizarRequisicionesRecientes(widget.Diccionario,DPI),
         ),
       );                    
         },

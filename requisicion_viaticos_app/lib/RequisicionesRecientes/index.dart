@@ -1,25 +1,24 @@
 
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:requisicion_viaticos_app/Components/Spinner.dart';
-import 'package:requisicion_viaticos_app/MainPage/index.dart';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/CardRecientes.dart';
 import 'package:requisicion_viaticos_app/VisualizarRequisiciones/CardRequisicion.dart';
-import 'package:requisicion_viaticos_app/VisualizarRequisiciones/Metodos.dart';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/Metodos.dart';
 
-class VisualizarRequisiciones extends StatefulWidget {
+class VisualizarRequisicionesRecientes extends StatefulWidget {
 
   final Map<String,String> Diccionario;
   final String ID_USUARIO;
 
-  const VisualizarRequisiciones(this.Diccionario,this.ID_USUARIO,{Key ? key}) : super(key: key);
+  const VisualizarRequisicionesRecientes(this.Diccionario,this.ID_USUARIO,{Key ? key}) : super(key: key);
 
   @override
-  VisualizarRequisiciones_ createState() => VisualizarRequisiciones_();
+  VisualizarRequisicionesRecientes_ createState() => VisualizarRequisicionesRecientes_();
 }
 
-class VisualizarRequisiciones_ extends State<VisualizarRequisiciones> {
+class VisualizarRequisicionesRecientes_ extends State<VisualizarRequisicionesRecientes> {
 
-  List<Historial> _HistorialRequisiciones_ = [];
+  List<RequisicionesFormato> _HistorialRequisiciones_ = [];
   TextEditingController Estado = TextEditingController();
   TextEditingController Agencia = TextEditingController();
   
@@ -46,24 +45,24 @@ class VisualizarRequisiciones_ extends State<VisualizarRequisiciones> {
     return DPI;
   }
 
-Future<List<Historial>> HistorialRequisiciones_() async
+Future<List<RequisicionesFormato>> HistorialRequisiciones_() async
   {
      showDialog(
         context: context,
         builder: (context) => Spinner(),
         barrierDismissible: false);
-    List<Historial> lst = await HistorialRequisiciones().ObtenerHistorial(widget.ID_USUARIO,widget.Diccionario); 
+    List<RequisicionesFormato> lst = await RequisicionesRecientes_().ObtenerRequisicionesActivas(widget.ID_USUARIO,widget.Diccionario); 
     Navigator.of(context).pop(true);                 
     return lst;
   }
 
-  List<Historial> ListaFiltrada() {
+  List<RequisicionesFormato> ListaFiltrada() {
     String tmp1 = Estado.text.toString();
     String tmp2 = Agencia.text.toString();
-    List<Historial> newLst = _HistorialRequisiciones_
+    List<RequisicionesFormato> newLst = _HistorialRequisiciones_
         .where((o) => o.Status.toLowerCase().contains(tmp1.toLowerCase()))
         .toList();
-    List<Historial> newLst2 = newLst
+    List<RequisicionesFormato> newLst2 = newLst
         .where((o) => o.Agencias.toLowerCase().contains(tmp2.toLowerCase()))
         .toList();    
     return newLst2;
@@ -76,7 +75,7 @@ Future<List<Historial>> HistorialRequisiciones_() async
     return 
     Scaffold(
       appBar: new AppBar(
-        title: Text("Historial de requisiciones",style: TextStyle(fontSize: 17),),
+        title: Text("Requisiciones de los ultimos 30 días",style: TextStyle(fontSize: 15),),
         centerTitle: true,
         leading: 
         Container(          
@@ -104,7 +103,7 @@ Future<List<Historial>> HistorialRequisiciones_() async
                         child: TextFieldDinamico__(
                             Agencia, 'Busqueda por Agencia')),
         for(var tmp in ListaFiltrada())
-            PermisosRequestCard(tmp)
+            PermisosRecientesRequestCard(tmp)
       ],),),
       )
     );    

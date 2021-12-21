@@ -7,6 +7,7 @@ import 'package:requisicion_viaticos_app/Components/Spinner.dart';
 import 'package:requisicion_viaticos_app/Solicitud_requisicion/Metodos.dart';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/index.dart';
 
 class CalendarModal extends StatefulWidget {
   
@@ -49,7 +50,7 @@ class _CalendarModalState extends State<CalendarModal> {
   }
 
   _CalendarModalState() {       
-   getConstant("IdAIRTABLE").then((val) => setState(() {
+   getConstant("DPI").then((val) => setState(() {
         ID_USUARIO = val;             
         }));
   }  
@@ -163,7 +164,7 @@ class _CalendarModalState extends State<CalendarModal> {
           ExpansionTile(title: Text("Control de requisiciones de víacticos",style: TextStyle(fontSize: 17),textAlign: TextAlign.center,),
           children: [            
           Requsion_('Ir a historial de requisiciones',1,size,Colors.black),
-          Requsion_('Ir a requisiciones de los ultimos 30 días',1,size,Colors.black)])
+          Requsion_('Ir a requisiciones de los ultimos 30 días',2,size,Colors.black)])
         ],
       ),)
     );
@@ -183,12 +184,20 @@ class _CalendarModalState extends State<CalendarModal> {
                                     if(opcion == 0)
                                     {
                                         CrearRequisicionViaticos();
-                                    }else{
+                                    }else if(opcion == 1){
 
                                       Navigator.push<void>(
                                         context,
                                         MaterialPageRoute<void>(
                                           builder: (BuildContext context) => VisualizarRequisiciones(widget.Diccionario,ID_USUARIO),
+                                        ),
+                                      );
+                                    }
+                                    else{
+                                      Navigator.push<void>(
+                                        context,
+                                        MaterialPageRoute<void>(
+                                          builder: (BuildContext context) => VisualizarRequisicionesRecientes(widget.Diccionario,ID_USUARIO),
                                         ),
                                       );
                                     }

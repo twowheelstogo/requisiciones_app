@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 
-class Historial with ChangeNotifier {
+class RequisicionesFormato with ChangeNotifier {
 
   final String Inicio;
   final String Fin;
@@ -14,7 +14,7 @@ class Historial with ChangeNotifier {
   final String Status;
   final String Monto;
 
-  Historial({
+  RequisicionesFormato({
     required this.Inicio,
     required this.Fin,
     required this.Agencias,
@@ -25,11 +25,11 @@ class Historial with ChangeNotifier {
 }
 
 // ignore: camel_case_types
-class HistorialRequisiciones 
+class RequisicionesRecientes_ 
 {
-  Future <List<Historial> > ObtenerHistorial(String id,Map<String,String> Diccionario) async
+  Future <List<RequisicionesFormato> > ObtenerRequisicionesActivas(String id,Map<String,String> Diccionario) async
   {
-    List<Historial> Historial_ = [];
+    List<RequisicionesFormato> Historial_ = [];
     final Response = await getRequisiciones(id);
     if(Response.statusCode == 200)
     {
@@ -43,7 +43,7 @@ class HistorialRequisiciones
           String agencia = tmp[i]["fields"]["AGENCIA"][0];
           var nombre_ = Diccionario.entries.firstWhere((entry) => entry.value
           == agencia).key;
-          Historial_.add(Historial(
+          Historial_.add(RequisicionesFormato(
           Inicio: tmp[i]["fields"]["FECHA_INICIO_VIAJE"].toString(), 
           Fin: tmp[i]["fields"]["FECHA_RETORNO_VIAJE"].toString(), 
           Agencias: nombre_.toString(), 
@@ -56,14 +56,18 @@ class HistorialRequisiciones
     return Historial_;
   }
 
-   Future<http.Response> getRequisiciones(String NombreUsuario) async {
+   Future<http.Response> getRequisiciones(String NombreUsuario) async {     
+     String Tipo = 'days';
+     String Status = 'APROBADA';
     String url = urlApi +
-        "REQUISICION_VIATICOS?" + 'filterByFormula=AND(({No_Documento}= ${NombreUsuario}))&sort%5B0%5D%5Bfield%5D=FECHA_RETORNO_VIAJE&sort%5B0%5D%5Bdirection%5D=desc';
+        "REQUISICION_VIATICOS" + "?filterByFormula=AND(({No_Documento}= '" + NombreUsuario + "'),(DATETIME_DIFF(TODAY(),{FECHA_RETORNO_VIAJE}, '" + Tipo + "') <= 31),({STATUS}='" + Status + "'))&sort%5B0%5D%5Bfield%5D=FECHA_RETORNO_VIAJE&sort%5B0%5D%5Bdirection%5D=desc";
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
       'Authorization': "Bearer $Token"
     };
+
+    print(url);
     http.Response response = await http.get(Uri.parse(url), headers: headers);
     return response;
   }
