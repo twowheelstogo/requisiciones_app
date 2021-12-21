@@ -56,13 +56,9 @@ Future<List<RequisicionesFormato>> HistorialRequisiciones_() async
     return lst;
   }
 
-  List<RequisicionesFormato> ListaFiltrada() {
-    String tmp1 = Estado.text.toString();
-    String tmp2 = Agencia.text.toString();
-    List<RequisicionesFormato> newLst = _HistorialRequisiciones_
-        .where((o) => o.Status.toLowerCase().contains(tmp1.toLowerCase()))
-        .toList();
-    List<RequisicionesFormato> newLst2 = newLst
+  List<RequisicionesFormato> ListaFiltrada() {    
+    String tmp2 = Agencia.text.toString();  
+    List<RequisicionesFormato> newLst2 = _HistorialRequisiciones_
         .where((o) => o.Agencias.toLowerCase().contains(tmp2.toLowerCase()))
         .toList();    
     return newLst2;
@@ -89,13 +85,7 @@ Future<List<RequisicionesFormato>> HistorialRequisiciones_() async
       ),
       body: SingleChildScrollView(
         child: Container(alignment: Alignment.bottomCenter,child: Column(children: [  
-        SizedBox(height: 10,)      ,
-        Container(
-                        margin: const EdgeInsets.only(top: 10),
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: TextFieldDinamico__(
-                            Estado, 'Busqueda por Status')),
+        SizedBox(height: 10,)      ,        
         Container(
                         margin: const EdgeInsets.only(top: 10),
                         width: MediaQuery.of(context).size.width * 0.9,

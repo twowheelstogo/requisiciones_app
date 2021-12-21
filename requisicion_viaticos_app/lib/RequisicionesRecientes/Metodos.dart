@@ -13,13 +13,15 @@ class RequisicionesFormato with ChangeNotifier {
   final String Agencias;
   final String Status;
   final String Monto;
+  final String ID;
 
   RequisicionesFormato({
     required this.Inicio,
     required this.Fin,
     required this.Agencias,
     required this.Status,
-    required this.Monto
+    required this.Monto,
+    required this.ID
   });
 
 }
@@ -48,6 +50,7 @@ class RequisicionesRecientes_
           Fin: tmp[i]["fields"]["FECHA_RETORNO_VIAJE"].toString(), 
           Agencias: nombre_.toString(), 
           Status: tmp[i]["fields"]["STATUS"].toString(), 
+          ID: tmp[i]["fields"]["ID"].toString(),
           Monto: tmp[i]["fields"]["MONTO_VIATICOS"].toString()));
         }
       }
