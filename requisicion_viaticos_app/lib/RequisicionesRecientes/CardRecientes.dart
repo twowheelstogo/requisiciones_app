@@ -27,11 +27,11 @@ class PermisosRecientesRequestCard extends StatelessWidget {
 
   void openFacturas(){
     showModalBottomSheet(context: context,
-        //    isScrollControlled: true,
-        // isDismissible: false,
-        // enableDrag: false,
+        isScrollControlled: true,
+        isDismissible: false,
+        enableDrag: false,
           builder: (context) {
-      return Facturas();
+      return Facturas(historial);
     });
   }
 
@@ -57,8 +57,8 @@ class PermisosRecientesRequestCard extends StatelessWidget {
                  Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FlatButton(onPressed: () {openFacturas();}, child: Text('Añadir facturas')),
-            FlatButton(onPressed: () {openDetalles();}, child: Text('Ver Detalles'))
+            FlatButton(onPressed: () {openDetalles();}, child: Text('Ver Detalles')),
+            FlatButton(onPressed: () {openFacturas();}, child: Text('Añadir facturas')),            
           ],
         )                                                 
               ],

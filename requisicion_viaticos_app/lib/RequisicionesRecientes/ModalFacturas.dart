@@ -1,23 +1,25 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/UploadImage.dart';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/Metodos.dart';
 
 class Facturas extends StatefulWidget {
 
-  
-  Facturas({Key ? key}) : super(key: key);
+  RequisicionesFormato historial;  
+  Facturas(this.historial,{Key ? key}) : super(key: key);
 
   @override
   Facturas_ createState() => Facturas_();
 }
 
-class Facturas_ extends State<Facturas> {
+class Facturas_ extends State<Facturas> {      
+
    @override
   Widget build(BuildContext context) { 
-    return Container(
-      child: Column(children: [
-        Text('HOLA 2')
-      ],),
-    );
+    return 
+    SingleChildScrollView(child: 
+    Column(children: [
+      UploadingImageToFirebaseStorage(widget.historial)
+    ],),);
   }
+
 }

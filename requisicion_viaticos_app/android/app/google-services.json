@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "753196708878",
+    "project_id": "requisiciones-viaticos",
+    "storage_bucket": "requisiciones-viaticos.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:753196708878:android:d085ac1eb66b5852ba785f",
+        "android_client_info": {
+          "package_name": "com.requisicion_viaticos_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "753196708878-bg2isu63k384gtlg0tahuj2kivv229f0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkSRB3iieRDC1iLtaguOV_hq4IsF7GtL8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "753196708878-bg2isu63k384gtlg0tahuj2kivv229f0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

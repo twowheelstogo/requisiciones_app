@@ -1,7 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:requisicion_viaticos_app/Config/routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 void main() async {
   Future<String> Ruta_() async {
@@ -20,6 +20,7 @@ void main() async {
   }
 
   String Ruta = await Ruta_();
+  await Firebase.initializeApp();
   runApp(MyApp(Ruta));
 }
 
