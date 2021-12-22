@@ -75,5 +75,42 @@ class RequisicionesRecientes_
     return response;
   }
 
+  Future<http.Response> crearDetallesLiquidacion(String FECHA_FACTURA, String Tipo,double Monto,String url1,String url2,String ID)async{
+       
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': "Bearer $Token"
+    };
+
+    var Arreglo1 = [{"url":url1},{"url":url2}];
+    var Arreglo2 = [{"url":url1}];
+    
+    Map<String, dynamic> body = {
+      "FECHA_FACTURA" : FECHA_FACTURA,
+      "TIPO_GASTO" : Tipo.toUpperCase(),
+      "MONTO" : Monto,
+      "FOTO_FACTURA" : (url1.length > 0 && url2.length > 0) ? Arreglo1 : Arreglo2,
+      "REQUISICION_VIATICOS" : [ID],            
+    };
+
+    final bodyEncoded = json.encode({
+      "records": [
+        {"fields": body}
+      ]
+    });
+
+    print(bodyEncoded);
+
+     String url = urlApi + 'DETALLE_LIQUIDACION';    
+    try {
+      final response = await http.post(Uri.parse(url),headers: headers,body: (bodyEncoded));
+      return response;
+    }on http.ClientException catch (e) {
+      throw(e.message);
+    }
+  }
+
+
 
 }

@@ -18,7 +18,7 @@ class Facturas_ extends State<Facturas> {
     return 
     SingleChildScrollView(child: 
     Container(
-      height: MediaQuery.of(context).size.width * 1.5,
+      //height: MediaQuery.of(context).size.width * 1.5,
       child: UploadingImageToFirebaseStorage(widget.historial)
     ),);
   }

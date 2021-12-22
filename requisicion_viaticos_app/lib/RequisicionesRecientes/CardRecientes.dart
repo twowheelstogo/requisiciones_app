@@ -28,10 +28,12 @@ class PermisosRecientesRequestCard extends StatelessWidget {
   void openFacturas(){
     showModalBottomSheet(context: context,
         isScrollControlled: true,
-        isDismissible: false,
-        enableDrag: false,
           builder: (context) {
-      return Facturas(historial);
+      return 
+      FractionallySizedBox(
+        heightFactor: 0.9,
+        child: Facturas(historial)
+      );      
     });
   }
 
