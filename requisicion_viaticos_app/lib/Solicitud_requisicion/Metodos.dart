@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:requisicion_viaticos_app/config/constants.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 class ListadoAgencias{
 
@@ -12,24 +13,52 @@ class ListadoAgencias{
     var s = json.encode(diccionario);
     prefs.setString('Diccionario', s.toString());
   }
-  
-   Future<http.Response> crearRequisicion(String Inicio, String Fin,double Monto,String ID_AGENCIA,String ID_USUARIO)async{
+
+  Future<http.Response> crearTarifario()async{
        
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
       'Authorization': "Bearer $Token"
     };
+    String now = DateFormat("yyyy-MM-dd").format(DateTime.now());
 
+    Map<String, dynamic> body = {
+      "FECHA_CREACION" : now.toString()      
+    };
+
+    final bodyEncoded = json.encode({
+      "records": [
+        {"fields": body}
+      ]
+    });
+
+     String url = urlApi + 'TARIFARIO_VIATICOS';
+    print(bodyEncoded);
+    try {
+      final response = await http.post(Uri.parse(url),headers: headers,body: (bodyEncoded));
+      return response;
+    }on http.ClientException catch (e) {
+      throw(e.message);
+    }
+  }
+  
+   Future<http.Response> crearRequisicion(String Inicio, String Fin,double Monto,String ID_AGENCIA,String ID_USUARIO,String ID2)async{
+       
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': "Bearer $Token"
+    };
     
-
     Map<String, dynamic> body = {
       "FECHA_INICIO_VIAJE" : Inicio,
       "FECHA_RETORNO_VIAJE" : Fin,
       "MONTO_VIATICOS" : Monto,
       "AGENCIA" : [ID_AGENCIA],
       "STATUS" : "PENDIENTE",      
-      "COLABORADORES": [ID_USUARIO]
+      "COLABORADORES": [ID_USUARIO],
+      "TARIFARIO_VIATICOS" : [ID2]
     };
 
     final bodyEncoded = json.encode({

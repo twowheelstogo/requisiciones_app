@@ -14,6 +14,7 @@ class RequisicionesFormato with ChangeNotifier {
   final String Status;
   final String Monto;
   final String ID;
+  final String ID_Tarifario;
 
   RequisicionesFormato({
     required this.Inicio,
@@ -21,7 +22,8 @@ class RequisicionesFormato with ChangeNotifier {
     required this.Agencias,
     required this.Status,
     required this.Monto,
-    required this.ID
+    required this.ID,
+    required this.ID_Tarifario
   });
 
 }
@@ -51,7 +53,11 @@ class RequisicionesRecientes_
           Agencias: nombre_.toString(), 
           Status: tmp[i]["fields"]["STATUS"].toString(), 
           ID: tmp[i]["fields"]["ID"].toString(),
-          Monto: tmp[i]["fields"]["MONTO_VIATICOS"].toString()));
+          Monto: tmp[i]["fields"]["MONTO_VIATICOS"].toString(),
+          ID_Tarifario: tmp[i]["fields"]["TARIFARIO_VIATICOS"][0].toString()
+          ),
+          
+          );
         }
       }
     }
@@ -75,7 +81,7 @@ class RequisicionesRecientes_
     return response;
   }
 
-  Future<http.Response> crearDetallesLiquidacion(String FECHA_FACTURA, String Tipo,double Monto,String url1,String url2,String ID)async{
+  Future<http.Response> crearDetallesLiquidacion(String FECHA_FACTURA, String Tipo,double Monto,String url1,String url2,String ID,String ID2)async{
        
     Map<String, String> headers = {
       'Content-type': 'application/json',
@@ -91,7 +97,8 @@ class RequisicionesRecientes_
       "TIPO_GASTO" : Tipo.toUpperCase(),
       "MONTO" : Monto,
       "FOTO_FACTURA" : (url1.length > 0 && url2.length > 0) ? Arreglo1 : Arreglo2,
-      "REQUISICION_VIATICOS" : [ID],            
+      "REQUISICION_VIATICOS" : [ID],  
+      "TARIFARIO_VIATICOS" : [ID2]          
     };
 
     final bodyEncoded = json.encode({

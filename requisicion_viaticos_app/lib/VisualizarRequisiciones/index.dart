@@ -103,8 +103,12 @@ Future<List<Historial>> HistorialRequisiciones_() async
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         child: TextFieldDinamico__(
                             Agencia, 'Busqueda por Agencia')),
-        for(var tmp in ListaFiltrada())
-            PermisosRequestCard(tmp)
+        ListaFiltrada().length > 0 ?           
+        Column(children: [for(var tmp in ListaFiltrada())
+            PermisosRequestCard(tmp)],)
+        : Container(alignment:Alignment.topCenter ,child: Column(children: [SizedBox(height: MediaQuery.of(context).size.width * 0.5,) ,Text('Sin requisiciones.',style:TextStyle(fontSize: 17))],))
+                            
+        
       ],),),
       )
     );    

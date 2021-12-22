@@ -161,7 +161,7 @@ class _UploadingImageToFirebaseStorageState
     if(_dateTime.toString().length > 0 && _current.length > 0 && Monto.text.toString().length > 0 && URL1.length > 0)
     {
       showDialog(context: context, builder: (_)=>Spinner(),barrierDismissible: false);
-    final Response = await RequisicionesRecientes_().crearDetallesLiquidacion(_dateTime.toString(),_current,double.parse(Monto.text.replaceAll(',', '')),URL1,URL2,widget.historial.ID);
+    final Response = await RequisicionesRecientes_().crearDetallesLiquidacion(_dateTime.toString(),_current,double.parse(Monto.text.replaceAll(',', '')),URL1,URL2,widget.historial.ID,widget.historial.ID_Tarifario);
     Navigator.of(context).pop(true);  
     print(Response.statusCode);
 
@@ -176,16 +176,8 @@ class _UploadingImageToFirebaseStorageState
     }
     }
     else{
-      print('ERROR ACA');
-      //Scaffold.of(context).showSnackBar(SnackBar(content: Text("Debe de llenar todos los campos.")));
-         Get.snackbar(
-               "Hey i'm a Get SnackBar!", // title
-               "It's unbelievable! I'm using SnackBar without context, without boilerplate, without Scaffold, it is something truly amazing!", // message              
-              barBlur: 20,
-              isDismissible: true,
-              duration: Duration(seconds: 3),
-            );
-
+      
+      
     }
   }
 
@@ -248,8 +240,8 @@ class _UploadingImageToFirebaseStorageState
                     Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FlatButton(onPressed: () async{await CrearDetallesLiquidacion(context);}, child: Text('Guardar',style: TextStyle(fontSize: 18),)),            
-            FlatButton(onPressed: () {Navigator.pop(context);}, child: Text('Cancelar',style: TextStyle(fontSize: 18),)),            
+            FlatButton(onPressed: () async{await CrearDetallesLiquidacion(context);}, child: Text('Guardar',style: TextStyle(fontSize: 17),)),            
+            FlatButton(onPressed: () {Navigator.pop(context);}, child: Text('Cancelar',style: TextStyle(fontSize: 17),)),            
           ],
         )                  
               ],      

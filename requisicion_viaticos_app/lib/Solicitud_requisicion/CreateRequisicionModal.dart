@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:requisicion_viaticos_app/VisualizarRequisiciones/index.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -8,6 +9,7 @@ import 'package:requisicion_viaticos_app/Solicitud_requisicion/Metodos.dart';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/index.dart';
+import 'dart:convert';
 
 class CalendarModal extends StatefulWidget {
   
@@ -26,6 +28,7 @@ class _CalendarModalState extends State<CalendarModal> {
   String _endDate ="";
   String selectedValue = "";
   String ID_USUARIO = "";
+  String ID_USUARIO2 = "";
   bool _selected = false;
   TextEditingController Monto = TextEditingController();
   
@@ -53,6 +56,10 @@ class _CalendarModalState extends State<CalendarModal> {
    getConstant("DPI").then((val) => setState(() {
         ID_USUARIO = val;             
         }));
+
+  getConstant("IdAIRTABLE").then((val) => setState(() {
+        ID_USUARIO2 = val;             
+        }));
   }  
  
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args){
@@ -70,7 +77,12 @@ class _CalendarModalState extends State<CalendarModal> {
     if(_initDate.length > 0 && _endDate.length > 0 && Monto.text.length > 0 && ID_AIRTABLE.length > 0)
     {
     showDialog(context: context, builder: (_)=>Spinner(),barrierDismissible: false);  
-    final Response = await ListadoAgencias().crearRequisicion(_initDate, _endDate, double.parse(Monto.text.replaceAll(',', '')),ID_AIRTABLE,ID_USUARIO);  
+    final Res = await ListadoAgencias().crearTarifario();
+    final Decoded = json.decode(Res.body);
+
+    if(Res.statusCode == 200)
+    {
+    final Response = await ListadoAgencias().crearRequisicion(_initDate, _endDate, double.parse(Monto.text.replaceAll(',', '')),ID_AIRTABLE,ID_USUARIO2,Decoded["records"][0]["fields"]["ID"]);  
     Navigator.of(context).pop(true);
 
     if(Response.statusCode == 200)
@@ -88,6 +100,15 @@ class _CalendarModalState extends State<CalendarModal> {
          ScaffoldMessenger.of(context).showSnackBar(_snackbar);
   }
     }
+
+      else
+  {
+        Navigator.of(context).pop(true);
+        final _snackbar = SnackBar(content: Text('Ha ocurrido un error, intente nuevamente.'));
+         ScaffoldMessenger.of(context).showSnackBar(_snackbar);
+  }
+
+    }    
     else{
       final _snackbar = SnackBar(content: Text('Debe de ingresar todos los campos.'));
          ScaffoldMessenger.of(context).showSnackBar(_snackbar);
