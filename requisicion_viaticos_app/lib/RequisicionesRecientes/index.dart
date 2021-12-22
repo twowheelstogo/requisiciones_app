@@ -4,6 +4,8 @@ import 'package:requisicion_viaticos_app/Components/Spinner.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/CardRecientes.dart';
 import 'package:requisicion_viaticos_app/VisualizarRequisiciones/CardRequisicion.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/Metodos.dart';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/Detalles/Metodos.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class VisualizarRequisicionesRecientes extends StatefulWidget {
 
@@ -21,6 +23,8 @@ class VisualizarRequisicionesRecientes_ extends State<VisualizarRequisicionesRec
   List<RequisicionesFormato> _HistorialRequisiciones_ = [];
   TextEditingController Estado = TextEditingController();
   TextEditingController Agencia = TextEditingController();
+  List<RequisicionesDetallesFormato> lstActivas = [];
+  String DPI = "";
   
   void initState() {    
     VisualizarRequisiciones_();
@@ -31,19 +35,38 @@ class VisualizarRequisicionesRecientes_ extends State<VisualizarRequisicionesRec
 
   VisualizarRequisiciones_()
   {
-        getConstant("usuario").then((val) => setState(() {
+        getConstant("DPI").then((val) => setState(() {
+          DPI = val;          
+        }));
 
+        getConstant("usuario").then((val) => setState(() {
           HistorialRequisiciones_().then((val2) => setState(() {                                      
             _HistorialRequisiciones_ = val2; 
           }));
 
-        }));
+          Activas().then((val2) => setState(() {
+          lstActivas = val2;
+          }));
+
+        }));        
   }
 
-   Future<String> getConstant(String msg) async {    
-    String DPI = '';    
+  Future<String> getConstant(String msg) async {
+    final prefs = await SharedPreferences.getInstance();
+    String DPI = '';
+    final res = prefs.getString(msg);
+    DPI = '$res';
     return DPI;
   }
+
+
+  Future< List<RequisicionesDetallesFormato> > Activas() async
+  {
+    List<RequisicionesDetallesFormato> lst = [];
+    lst = await DetallesRequisicionesRecientes().ObtenerRequisicionesActivas(DPI);
+    return lst;
+  }
+
 
 Future<List<RequisicionesFormato>> HistorialRequisiciones_() async
   {
@@ -63,9 +86,7 @@ Future<List<RequisicionesFormato>> HistorialRequisiciones_() async
         .toList();    
     return newLst2;
   }
-
-  
-  
+    
    @override  
   Widget build(BuildContext context) {
     return 
@@ -93,9 +114,8 @@ Future<List<RequisicionesFormato>> HistorialRequisiciones_() async
                         child: TextFieldDinamico__(
                             Agencia, 'Busqueda por Agencia')),
         ListaFiltrada().length > 0 ?           
-        Column(children: [for(var tmp in ListaFiltrada()) PermisosRecientesRequestCard(tmp)],)
-        : Container(alignment:Alignment.topCenter ,child: Column(children: [SizedBox(height: MediaQuery.of(context).size.width * 0.5,) ,Text('Sin requisiciones recientes.',style:TextStyle(fontSize: 17))],))
-             
+        Column(children: [for(var tmp in ListaFiltrada()) PermisosRecientesRequestCard(tmp,lstActivas)],)
+        : Container(alignment:Alignment.topCenter ,child: Column(children: [SizedBox(height: MediaQuery.of(context).size.width * 0.5,) ,Text('Sin requisiciones recientes.',style:TextStyle(fontSize: 17))],))             
       ],),),
       )
     );    

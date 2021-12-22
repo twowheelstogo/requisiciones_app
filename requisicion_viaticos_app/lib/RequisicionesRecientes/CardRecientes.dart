@@ -2,26 +2,28 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/Metodos.dart';
-import 'package:requisicion_viaticos_app/RequisicionesRecientes/ModalDetalles.dart';
-import 'package:requisicion_viaticos_app/RequisicionesRecientes/ModalFacturas.dart';
-
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/Detalles/ModalDetalles.dart';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/Facturas/ModalFacturas.dart';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/Detalles/Metodos.dart';
 
 class PermisosRecientesRequestCard extends StatelessWidget {
   
   RequisicionesFormato historial;
-  PermisosRecientesRequestCard(this.historial ,{Key ? key}):super(key:key);
-        
-
+  List<RequisicionesDetallesFormato> lstActivas;
+  PermisosRecientesRequestCard(this.historial,this.lstActivas,{Key ? key}):super(key:key);
+          
   @override
   Widget build(BuildContext context) {
     
   void openDetalles(){
     showModalBottomSheet(context: context,
-        //    isScrollControlled: true,
-        // isDismissible: false,
-        // enableDrag: false,
+        isScrollControlled: true,
           builder: (context) {
-      return Detalles();
+      return 
+      FractionallySizedBox(
+        heightFactor: 0.9,
+        child: Detalles(lstActivas)
+      );      
     });
   }
 
@@ -37,30 +39,35 @@ class PermisosRecientesRequestCard extends StatelessWidget {
     });
   }
 
-    return Card(    
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),    
+    return 
+    Card(    
+      
+      shape: RoundedRectangleBorder(
+    side: BorderSide(color: Colors.blue.shade400, width: 5),
+    borderRadius: BorderRadius.circular(10),
+  ),
     margin: EdgeInsets.all(15),    
     elevation: 10,
     child: Column(
-      children: <Widget>[
-        
+      children: <Widget>[        
         ListTile(
           contentPadding: EdgeInsets.fromLTRB(15, 10, 25, 0),          
-          subtitle: Column(
+          subtitle: Column(            
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('Inicio: ' + DateFormat("yyyy-MM-dd").format(DateTime.parse(historial.Inicio)),style: TextStyle(color: Colors.black)),
+                SizedBox(height: 10,),
+                Text('Agencia: ' +  historial.Agencias.toLowerCase(),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),  SizedBox(height: 5,),
+                Text('Inicio viaje: ' + DateFormat("yyyy-MM-dd").format(DateTime.parse(historial.Inicio)),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500)),
                 SizedBox(height: 5,),
-                Text('Fin: ' + DateFormat("yyyy-MM-dd").format(DateTime.parse(historial.Fin)),style: TextStyle(color: Colors.black)), SizedBox(height: 5,),
-                Text('Monto: Q ' + double.parse(historial.Monto).toString() ,style: TextStyle(color: Colors.black)),SizedBox(height: 5,),
-                Text('Agencia: ' +  historial.Agencias.toLowerCase(),style: TextStyle(color: Colors.black),textAlign: TextAlign.center,),  SizedBox(height: 5,),
-                Text('Status: ' + historial.Status.toLowerCase(),style: TextStyle(color: Colors.black),textAlign: TextAlign.center,),
+                Text('Fin viaje: ' + DateFormat("yyyy-MM-dd").format(DateTime.parse(historial.Fin)),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500)), SizedBox(height: 5,),
+                Text('Monto víaticos: Q ' + double.parse(historial.Monto).toString() ,style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500)),SizedBox(height: 5,),                
+                Text('Status requisición: ' + historial.Status.toLowerCase(),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
                 SizedBox(height: 3,),   
                  Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FlatButton(onPressed: () {openDetalles();}, child: Text('Ver Detalles')),
-            FlatButton(onPressed: () {openFacturas();}, child: Text('Añadir facturas')),            
+            FlatButton(onPressed: () {openDetalles();}, child: Text('Ver Detalles',style: TextStyle(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.solid),)),
+            FlatButton(onPressed: () {openFacturas();}, child: Text('Añadir facturas',style: TextStyle(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.solid),)),            
           ],
         )                                                 
               ],

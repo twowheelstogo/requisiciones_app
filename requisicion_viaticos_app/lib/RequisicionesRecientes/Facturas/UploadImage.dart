@@ -7,12 +7,12 @@ import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart';
 import 'package:pattern_formatter/numeric_formatter.dart';
-import 'package:requisicion_viaticos_app/RequisicionesRecientes/firebase_api.dart';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/Facturas/firebase_api.dart';
 import 'package:requisicion_viaticos_app/Components/SpinnerImage.dart';
 import 'package:requisicion_viaticos_app/Components/Spinner.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/Metodos.dart';
 import 'package:intl/intl.dart';
-import 'package:requisicion_viaticos_app/RequisicionesRecientes/Imagen.dart';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/Facturas/Imagen.dart';
 import 'package:uuid/uuid.dart';
 import 'package:get/get.dart';
 

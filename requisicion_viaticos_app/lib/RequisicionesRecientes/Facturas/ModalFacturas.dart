@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:requisicion_viaticos_app/RequisicionesRecientes/UploadImage.dart';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/Facturas/UploadImage.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/Metodos.dart';
 
 class Facturas extends StatefulWidget {
