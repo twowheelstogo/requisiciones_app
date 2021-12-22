@@ -10,13 +10,15 @@ class RequisicionesDetallesFormato with ChangeNotifier {
   final String MONTO;
   final List FOTO_FACTURA;  
   final String FECHA_FACTURA;
+  final String ID;
 
   RequisicionesDetallesFormato({
     required this.Fecha,
     required this.TIPO_GASTO,
     required this.MONTO,
     required this.FOTO_FACTURA,    
-    required this.FECHA_FACTURA
+    required this.FECHA_FACTURA,
+    required this.ID
   });
 }
 
@@ -24,7 +26,7 @@ class DetallesRequisicionesRecientes {
 
   Future <List<RequisicionesDetallesFormato> > ObtenerRequisicionesActivas(String id) async
   {
-    List<RequisicionesDetallesFormato> Historial_ = [];
+    List<RequisicionesDetallesFormato> Historial_ = [];    
     final Response = await getRequisiciones(id);
 
     if(Response.statusCode == 200)
@@ -41,7 +43,8 @@ class DetallesRequisicionesRecientes {
             TIPO_GASTO: tmp[i]["fields"]["TIPO_GASTO"].toString(), 
             MONTO: tmp[i]["fields"]["MONTO"].toString(), 
             FOTO_FACTURA: tmp[i]["fields"]["FOTO_FACTURA"],
-            FECHA_FACTURA: tmp[i]["fields"]["FECHA_FACTURA"]
+            FECHA_FACTURA: tmp[i]["fields"]["FECHA_FACTURA"],
+            ID: tmp[i]["fields"]["TARIFARIO_VIATICOS"][0]
             ),                    
           );
         }
@@ -50,6 +53,8 @@ class DetallesRequisicionesRecientes {
 
     return Historial_;
   }
+
+
 
   Future<http.Response> getRequisiciones(String NombreUsuario) async {     
      String Tipo = 'days';

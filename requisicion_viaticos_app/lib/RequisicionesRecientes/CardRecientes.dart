@@ -15,14 +15,14 @@ class PermisosRecientesRequestCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     
-  void openDetalles(){
+  void openDetalles(String ID){
     showModalBottomSheet(context: context,
         isScrollControlled: true,
           builder: (context) {
       return 
       FractionallySizedBox(
         heightFactor: 0.9,
-        child: Detalles(lstActivas)
+        child: Detalles(lstActivas,ID)
       );      
     });
   }
@@ -37,7 +37,7 @@ class PermisosRecientesRequestCard extends StatelessWidget {
         child: Facturas(historial)
       );      
     });
-  }
+  }  
 
     return 
     Card(    
@@ -66,7 +66,7 @@ class PermisosRecientesRequestCard extends StatelessWidget {
                  Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FlatButton(onPressed: () {openDetalles();}, child: Text('Ver Detalles',style: TextStyle(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.solid),)),
+            FlatButton(onPressed: () {openDetalles(historial.ID_Tarifario);}, child: Text('Ver Detalles',style: TextStyle(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.solid),)),
             FlatButton(onPressed: () {openFacturas();}, child: Text('Añadir facturas',style: TextStyle(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.solid),)),            
           ],
         )                                                 
