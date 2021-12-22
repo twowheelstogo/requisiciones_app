@@ -147,7 +147,8 @@ class _CalendarModalState extends State<CalendarModal> {
               ThousandsFormatter(allowFraction: true)
                 ],
               keyboardType: TextInputType.number,       
-                  )),
+                  )
+                  ),
               SizedBox(height: 30),
               
           Text('Seleccione la fecha de inicio y de fin del viaje',style: TextStyle(fontSize: 13,color: Colors.black),                                    ),

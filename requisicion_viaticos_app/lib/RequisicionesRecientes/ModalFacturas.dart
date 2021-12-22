@@ -17,9 +17,10 @@ class Facturas_ extends State<Facturas> {
   Widget build(BuildContext context) { 
     return 
     SingleChildScrollView(child: 
-    Column(children: [
-      UploadingImageToFirebaseStorage(widget.historial)
-    ],),);
+    Container(
+      height: MediaQuery.of(context).size.width * 1.5,
+      child: UploadingImageToFirebaseStorage(widget.historial)
+    ),);
   }
 
 }

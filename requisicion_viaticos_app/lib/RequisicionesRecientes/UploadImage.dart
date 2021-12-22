@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart';
+import 'package:pattern_formatter/numeric_formatter.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/firebase_api.dart';
 import 'package:requisicion_viaticos_app/Components/SpinnerImage.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/Metodos.dart';
@@ -29,7 +30,8 @@ class _UploadingImageToFirebaseStorageState
   ["Seleccione tipo de gasto","Hospedaje","Comida","Gasolina"];
   List<DropdownMenuItem<String>> _dropDownMenuItems = [];
   String _current = "";
-  
+  TextEditingController Monto = TextEditingController();
+
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
     List<DropdownMenuItem<String>> items = [];
     for (String city in _gasto) {
@@ -44,6 +46,7 @@ class _UploadingImageToFirebaseStorageState
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
     _current = _dropDownMenuItems[0].value.toString();
+    Monto.text = "";
     super.initState();
   }
 
@@ -100,42 +103,78 @@ class _UploadingImageToFirebaseStorageState
   @override
   Widget build(BuildContext context)  {
     final fileName = _imageFile != null ? basename(_imageFile!.path) : 'No File Selected';         
-
     return Column(      
-        children: [              
-              Container(
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: new DropdownButton(                 
-                value: _current,
-                items: _dropDownMenuItems,
-                onChanged: (value) {changedDropDownItem(value.toString());},
-              ),)
-            ,
+        children: [ 
+          SizedBox(height: 20,),                              
+            Container( alignment: Alignment.center,height: 19,width: MediaQuery.of(context).size.width * 0.9,
+              child: Text('Detalles de víaticos',style: TextStyle(fontSize: 18,color: Colors.black,),textAlign: TextAlign.center,),),                
+              SizedBox(height: 20,),              
+                  Inicio(context),
+                  SizedBox(height: 20,),      
                 Container(                                                
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(30.0),
-                          child:
-                            //inicia condicion
-                           Bandera == true
-                              ? 
-                              //si
-                              FlatButton(onPressed: () {VisualizaImagen(context);}, child: Text('Vista previa'))
-                              : 
-                              //no
-                              FlatButton(
-                            child: Icon(
-                              Icons.add_a_photo,
-                              color: Colors.blue,
-                              size: 50,
-                            ),
-                            onPressed: () async{ await pickImage(context);},
-                          ),
+                          child:                           
+                              SeleccionarImagen(context)                                                          
                           //fin condicion
                         ),
                       ),
                 
               ],      
     );
+  }
+
+  Widget SeleccionarImagen(context)
+  {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+            FlatButton(
+                            child: 
+                            Column(children: [
+                            Bandera == true
+                              ? 
+                            Text("Actualizar imagen") : Text("Seleccione una imagen")  ,
+                            SizedBox(height: 10,),   
+                            Icon(
+                              Icons.add_a_photo,
+                              color: Colors.black,
+                              size: 35,
+                            ),],),
+                            onPressed: () async{ await pickImage(context);},
+                          ),
+                          Bandera == true
+                              ? 
+                          FlatButton(onPressed: () {VisualizaImagen(context);}, child: Text('Vista previa')) : Container()
+      ],);
+  }
+
+  Widget Inicio(context)
+  {
+    return Column(children: [
+  Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: new DropdownButton(                 
+                value: _current,
+                items: _dropDownMenuItems,
+                onChanged: (value) {changedDropDownItem(value.toString());},
+              ),),    
+              SizedBox(height: 20,),
+            Container( alignment: Alignment.topLeft,height: 19,width: MediaQuery.of(context).size.width * 0.9,
+              child: Text('Ingrese Monto de víaticos',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),),          
+               Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: TextFormField(                      
+                    controller: Monto,
+                    style: TextStyle(color: Colors.black),   
+                    inputFormatters: [
+              ThousandsFormatter(allowFraction: true)
+                ],
+              keyboardType: TextInputType.number,       
+                  )             
+            ),
+
+    ],);
   }
 
   void VisualizaImagen(context){
