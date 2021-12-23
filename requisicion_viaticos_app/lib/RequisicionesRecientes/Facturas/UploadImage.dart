@@ -14,7 +14,7 @@ import 'package:requisicion_viaticos_app/RequisicionesRecientes/Metodos.dart';
 import 'package:intl/intl.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/Facturas/Imagen.dart';
 import 'package:uuid/uuid.dart';
-import 'package:get/get.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class UploadingImageToFirebaseStorage extends StatefulWidget {
   
@@ -46,6 +46,11 @@ class _UploadingImageToFirebaseStorageState
   String URL2 = "";
   var uuid = Uuid();  
 
+  void showToast(String mensaje) => Fluttertoast.showToast(
+    msg: mensaje,
+    fontSize: 16,
+  );
+
 
   List<DropdownMenuItem<String>> getDropDownMenuItems() {
     List<DropdownMenuItem<String>> items = [];
@@ -71,25 +76,7 @@ class _UploadingImageToFirebaseStorageState
   }
 
    final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
- 
-   void showSnackBar(BuildContext context) {
-    final snackBar = SnackBar(
-      content: const Text('Hello, Coflutter!'),
-      backgroundColor: const Color(0xffae00f0),
-      behavior: SnackBarBehavior.floating,
-      duration: const Duration(seconds: 2),
-      action: SnackBarAction(
-          label: 'Done',
-          textColor: Colors.white,
-          onPressed: () {
-            print('Done pressed!');
-          }),
-    );
-
-    Scaffold.of(context).showSnackBar(snackBar);
-  }
- 
-
+    
 
   @override      
   final picker = ImagePicker();
@@ -110,7 +97,7 @@ class _UploadingImageToFirebaseStorageState
     if (_imageFile == null) 
     {
       Navigator.of(context).pop(true);     
-      showSnackBar(context);
+      showToast('Ha ocurrido un error, intente nuevemente.');
       //_showScaffold('Ha ocurrido un error, intente nuevemente.');
       //openSnackBarWithAction("Ha ocurrido un error, intente nuevemente.");  
       //    
@@ -128,7 +115,7 @@ class _UploadingImageToFirebaseStorageState
       Navigator.of(context).pop(true);            
       //openSnackBarWithAction("Ha ocurrido un error, intente nuevemente.");
       //_showScaffold('Ha ocurrido un error, intente nuevemente.');
-      showSnackBar(context);
+      showToast('Ha ocurrido un error, intente nuevemente.');
       return;
     }    
     
@@ -148,11 +135,11 @@ class _UploadingImageToFirebaseStorageState
       URL2 = urlDownload;
     });}    
 
+    showToast('Imagen cargada exitosamente.');
+     print("exito");
     Navigator.of(context).pop(true);  
      //openSnackBarWithAction("Imagen cargada exitosamente.");
-     //_showScaffold('Imagen cargrada exitosamente.');
-     showSnackBar(context);
-     print("exito");
+     //_showScaffold('Imagen cargrada exitosamente.');     
         
   }
 
@@ -161,23 +148,22 @@ class _UploadingImageToFirebaseStorageState
     if(_dateTime.toString().length > 0 && _current.length > 0 && Monto.text.toString().length > 0 && URL1.length > 0)
     {
       showDialog(context: context, builder: (_)=>Spinner(),barrierDismissible: false);
-    final Response = await RequisicionesRecientes_().crearDetallesLiquidacion(_dateTime.toString(),_current,double.parse(Monto.text.replaceAll(',', '')),URL1,URL2,widget.historial.ID,widget.historial.ID_Tarifario);
-    Navigator.of(context).pop(true);  
-    print(Response.statusCode);
+    final Response = await RequisicionesRecientes_().crearDetallesLiquidacion(_dateTime.toString(),_current,double.parse(Monto.text.replaceAll(',', '')),URL1,URL2,widget.historial.ID,widget.historial.ID_Tarifario);        
 
     if(Response.statusCode == 200)
     {
+        Navigator.of(context).pop(true);  
         Navigator.pop(context);
         final _snackbar = SnackBar(content: Text('Detalles agregrados exitosamente.'));        
         ScaffoldMessenger.of(context).showSnackBar(_snackbar);  
     }
     else{
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text("Ha ocurrido un error, intente nuevemente.")));
+        showToast('Ha ocurrido un error, intente de nuevo.');
+        Navigator.of(context).pop(true);  
     }
     }
-    else{
-      
-      
+    else{      
+      showToast('Debe de ingresar todos los campos.');      
     }
   }
 
