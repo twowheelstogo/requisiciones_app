@@ -21,20 +21,18 @@ class PermisosRequestCard extends StatelessWidget {
     margin: EdgeInsets.all(15),    
     elevation: 10,
     child: Column(
-      children: <Widget>[
-        
+      children: <Widget>[        
         ListTile(
           contentPadding: EdgeInsets.fromLTRB(15, 10, 25, 0),          
           subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('Inicio: ' + DateFormat("yyyy-MM-dd").format(DateTime.parse(historial.Inicio)),style: TextStyle(color: Colors.black)),
-                SizedBox(height: 5,),
-                Text('Fin: ' + DateFormat("yyyy-MM-dd").format(DateTime.parse(historial.Fin)),style: TextStyle(color: Colors.black)), SizedBox(height: 5,),
-                Text('Monto: Q ' + double.parse(historial.Monto).toString() ,style: TextStyle(color: Colors.black)),SizedBox(height: 5,),
-                Text('Agencia: ' +  historial.Agencias.toLowerCase(),style: TextStyle(color: Colors.black),textAlign: TextAlign.center,),  SizedBox(height: 5,),
+                Text('Agencia: ' +  historial.Agencias.toLowerCase(),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),  SizedBox(height: 5,),
+                Text('Inicio viaje: ' + DateFormat("yyyy-MM-dd").format(DateTime.parse(historial.Inicio)),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500)),                
+                Text('Fin viaje: ' + DateFormat("yyyy-MM-dd").format(DateTime.parse(historial.Fin)),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500)), SizedBox(height: 5,),
+                Text('Monto víaticos: Q ' + double.parse(historial.Monto).toString() ,style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500)),SizedBox(height: 5,),                
                 statusComp("${historial.Status}"),                
-                SizedBox(height: 3,),                                    
+                SizedBox(height: 15,),                                    
               ],
             ),)
       ])                                    
