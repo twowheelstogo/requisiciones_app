@@ -14,7 +14,10 @@ class PermisosRequestCard extends StatelessWidget {
   Widget build(BuildContext context) {
     
     return Card(    
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),    
+          shape: RoundedRectangleBorder(
+    side: BorderSide(color: Colors.blue.shade400, width: 5),
+    borderRadius: BorderRadius.circular(10),
+  ),     
     margin: EdgeInsets.all(15),    
     elevation: 10,
     child: Column(
