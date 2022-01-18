@@ -14,6 +14,24 @@ class ListadoAgencias{
     prefs.setString('Diccionario', s.toString());
   }
 
+  void Costos(Map<String, String> DiccionarioCostos) async
+  {
+    final prefs = await SharedPreferences.getInstance();    
+    prefs.setString('DESAYUNO', DiccionarioCostos["DESAYUNO"].toString());
+    prefs.setString('ALMUERZO', DiccionarioCostos["ALMUERZO"].toString());
+    prefs.setString('CENA', DiccionarioCostos["CENA"].toString());
+    prefs.setString('GASOLINA', DiccionarioCostos["GASOLINA"].toString());
+    prefs.setString('HOSPEDAJE', DiccionarioCostos["HOSPEDAJE"].toString());
+  }
+
+  Future<String> ObtenerCostos(String llave) async
+  {
+    final prefs = await SharedPreferences.getInstance(); 
+    return prefs.getString(llave).toString();
+  }
+  
+
+
   Future<http.Response> crearTarifario()async{
        
     Map<String, String> headers = {
@@ -42,8 +60,19 @@ class ListadoAgencias{
       throw(e.message);
     }
   }
-  
-   Future<http.Response> crearRequisicion(String Inicio, String Fin,double Monto,String ID_AGENCIA,String ID_USUARIO,String ID2)async{
+    
+   Future<http.Response> crearRequisicion(String Inicio, String Fin,double Monto,String ID_AGENCIA,String ID_USUARIO,String ID2,
+   String Desayuno,String Almuerzo,String Cena,String Gasolina,String Hospedaje) async{
+
+     DateTime dt1 = DateTime.parse(Fin);
+     DateTime dt2 = DateTime.parse(Inicio);     
+     Duration diff = dt1.difference(dt2);  
+
+     print('AQUI: ' + Almuerzo);
+        
+     double MontoHotel =  double.parse(Hospedaje) * double.parse(diff.inDays.toString());
+     double MontoComida = ( double.parse(Desayuno) + double.parse(Almuerzo) + double.parse(Cena)) * double.parse(diff.inDays.toString());
+     double MontoGasolina=  double.parse(Gasolina) * double.parse(diff.inDays.toString());
        
     Map<String, String> headers = {
       'Content-type': 'application/json',
@@ -54,11 +83,14 @@ class ListadoAgencias{
     Map<String, dynamic> body = {
       "FECHA_INICIO_VIAJE" : Inicio,
       "FECHA_RETORNO_VIAJE" : Fin,
-      "MONTO_VIATICOS" : Monto,
+      "MONTO_VIATICOS" : (MontoHotel+MontoComida+MontoGasolina),
       "AGENCIA" : [ID_AGENCIA],
       "STATUS" : "PENDIENTE",      
       "COLABORADORES": [ID_USUARIO],
-      "TARIFARIO_VIATICOS" : [ID2]
+      "TARIFARIO_VIATICOS" : [ID2],
+      "MONTO_HOTEL" : MontoHotel,
+      "MONTO_COMIDA" : MontoComida,
+      "MONTO_GASOLINA" : MontoGasolina,
     };
 
     final bodyEncoded = json.encode({
@@ -82,8 +114,11 @@ class ListadoAgencias{
   {    
     List<String> Agencias = [];
     Map<String,String> Diccionario = {};
+    Map<String,String> DiccionarioCostos = {};
+
     bool Bandera = false;
     String paginacion = "";
+    String Desayuno = "", Almuerzo = "", Cena= "", Gasolina= "", Hospedaje= "";
     do
     {    
     final Response = await ObtenerAgencias(paginacion);
@@ -92,11 +127,23 @@ class ListadoAgencias{
       final Decoded = json.decode(Response.body);
 
       for(var i = 0; i < Decoded["records"].length; i++)
-      {
+      {        
         final ID_AIRTABLE = Decoded["records"][i]["fields"]["ID"];
-        final NOMBRE = Decoded["records"][i]["fields"]["NOMBRE"];
-        Diccionario[NOMBRE.toString()] = ID_AIRTABLE.toString();
-        Agencias.add(NOMBRE.toString());
+        final NOMBRE = Decoded["records"][i]["fields"]["TMP_REGION"];        
+
+        if(!Diccionario.containsKey(NOMBRE.toString()))
+        {
+          Diccionario[NOMBRE.toString()] = ID_AIRTABLE.toString();
+          Agencias.add(NOMBRE.toString());                                     
+        }                                   
+
+        if(!DiccionarioCostos.containsKey("DESAYUNO")){
+          DiccionarioCostos["DESAYUNO"] = Decoded["records"][i]["fields"]["COSTO_DESAYUNO"][0].toString();
+          DiccionarioCostos["ALMUERZO"] = Decoded["records"][i]["fields"]["COSTO_ALMUERZOS"][0].toString();
+          DiccionarioCostos["CENA"] = Decoded["records"][i]["fields"]["COSTO_CENA"][0].toString();
+          DiccionarioCostos["GASOLINA"] = Decoded["records"][i]["fields"]["COSTO_GASOLINA"][0].toString();
+          DiccionarioCostos["HOSPEDAJE"] = Decoded["records"][i]["fields"]["COSTO_HOSPEDAJE"][0].toString();
+        }
       }
 
       if(Decoded["offset"] != null)
@@ -107,11 +154,13 @@ class ListadoAgencias{
         Bandera = true;
       }
     }
-
     }
     while(Bandera != true);
+    
+    print('AQUI: '+Desayuno);
 
-    return [Agencias,Diccionario];    
+    Costos(DiccionarioCostos); 
+    return [Agencias,Diccionario,DiccionarioCostos];    
   }
 
   Future<http.Response> ObtenerAgencias(String Paginacion) async {

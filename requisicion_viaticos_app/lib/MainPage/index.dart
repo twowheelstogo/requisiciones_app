@@ -20,6 +20,7 @@ class MainPage_ extends State<MainPage> {
   String Genero = "";
   Map<String,String> Diccionario = {};
   List<String> Agencias = [];  
+  String Hospedaje = "",Desayuno= "",Almuerzo = "",Cena = "", Gasolina = "";
 
   void initState() {    
     MainPage_();
@@ -40,14 +41,19 @@ class MainPage_ extends State<MainPage> {
         }));
     getConstant("Genero").then((val) => setState(() {
           Genero = ConvertirNombre(val);
+          
 
-          ObtenerAgencias().then((val2) => setState(() {
+          ObtenerAgencias().then((val2) => setState(() {            
             Agencias = val2[0];
-            Diccionario=val2[1];
+            Diccionario=val2[1];            
+            Desayuno=val2[2]["DESAYUNO"];
+            Almuerzo=val2[2]["ALMUERZO"];
+            Cena=val2[2]["CENA"];
+            Gasolina=val2[2]["GASOLINA"];
+            Hospedaje=val2[2]["HOSPEDAJE"];                                    
+            }));
         }));
 
-
-        }));
   }
 
   Future<List> ObtenerAgencias() async {
@@ -116,7 +122,7 @@ class MainPage_ extends State<MainPage> {
                           // width: MediaQuery.of(context).size.width * 0.95,
                           // )  ,
                                       SizedBox(height: 20,),                        
-                          Solicitud(Diccionario,Agencias)
+                          Solicitud(Diccionario,Agencias,Desayuno,Almuerzo,Cena,Gasolina,Hospedaje)
                         ],)
                             ),                                                
                         ]

@@ -103,9 +103,10 @@ class _UserComponentState extends State<UserComponent> {
     //authModel.user.urlFoto;
     return Padding(
         padding: const EdgeInsets.only(right: 10.0),
-        child: GFAvatar(
-            backgroundImage: NetworkImage(photourl),
-            shape: GFAvatarShape.circle,                        
-            ));
+        child: 
+        photourl.length > 0 ?
+        GFAvatar(backgroundImage: NetworkImage(photourl),shape: GFAvatarShape.circle,) 
+        : Center(child: CircularProgressIndicator(),)
+        );
   }
 }

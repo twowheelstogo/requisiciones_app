@@ -15,9 +15,10 @@ class CalendarModal extends StatefulWidget {
   
     final Map<String,String> Diccionario;  
     final List<String> Agencias;  
+    final String Desayuno,Almuerzo,Cena,Gasolina,Hospedaje;
   
 
-  const CalendarModal(this.Diccionario,this.Agencias,{Key ? key}) : super(key: key);
+  const CalendarModal(this.Diccionario,this.Agencias,this.Desayuno,this.Almuerzo,this.Cena,this.Gasolina,this.Hospedaje,{Key ? key}) : super(key: key);
   
   @override
   _CalendarModalState createState() => _CalendarModalState();
@@ -29,6 +30,7 @@ class _CalendarModalState extends State<CalendarModal> {
   String selectedValue = "";
   String ID_USUARIO = "";
   String ID_USUARIO2 = "";
+  String Hospedaje = "",Desayuno= "",Almuerzo = "",Cena = "", Gasolina = "";
   bool _selected = false;
   TextEditingController Monto = TextEditingController();
   
@@ -57,7 +59,7 @@ class _CalendarModalState extends State<CalendarModal> {
         ID_USUARIO = val;             
         }));
 
-  getConstant("IdAIRTABLE").then((val) => setState(() {
+  getConstant("IdAIRTABLE").then((val) => setState(() { 
         ID_USUARIO2 = val;             
         }));
   }  
@@ -74,7 +76,7 @@ class _CalendarModalState extends State<CalendarModal> {
 
   void CrearRequisicionViaticos() async{
     
-    if(_initDate.length > 0 && _endDate.length > 0 && Monto.text.length > 0 && ID_AIRTABLE.length > 0)
+    if(_initDate.length > 0 && _endDate.length > 0 && ID_AIRTABLE.length > 0)
     {
     showDialog(context: context, builder: (_)=>Spinner(),barrierDismissible: false);  
     final Res = await ListadoAgencias().crearTarifario();
@@ -82,7 +84,9 @@ class _CalendarModalState extends State<CalendarModal> {
 
     if(Res.statusCode == 200)
     {
-    final Response = await ListadoAgencias().crearRequisicion(_initDate, _endDate, double.parse(Monto.text.replaceAll(',', '')),ID_AIRTABLE,ID_USUARIO2,Decoded["records"][0]["fields"]["ID"]);  
+    final Response = await ListadoAgencias().crearRequisicion(_initDate, _endDate,0,ID_AIRTABLE,ID_USUARIO2,Decoded["records"][0]["fields"]["ID"],
+    widget.Desayuno,widget.Almuerzo,widget.Cena,widget.Gasolina,widget.Hospedaje 
+    );  
     Navigator.of(context).pop(true);
 
     if(Response.statusCode == 200)
@@ -135,7 +139,7 @@ class _CalendarModalState extends State<CalendarModal> {
               child: Column(children: [
                 SizedBox(height: 20,),
                 Container( alignment: Alignment.topLeft,height: 19,
-              child: Text('Ingrese Agencia a visitar',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),),                
+              child: Text('Ingrese región a visitar',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),),                
                 Autocomplete(                      
               optionsBuilder: (TextEditingValue textEditingValue) {
                 if (textEditingValue.text == '') {
@@ -156,20 +160,20 @@ class _CalendarModalState extends State<CalendarModal> {
                   print(widget.Diccionario[selection].toString());
               },
             ),
-            SizedBox(height: 20,),
-            Container( alignment: Alignment.topLeft,height: 19,
-              child: Text('Ingrese Monto de víaticos',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),),
-              Container(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                    child: TextFormField(                      
-                    controller: Monto,
-                    style: TextStyle(color: Colors.black),   
-                    inputFormatters: [
-              ThousandsFormatter(allowFraction: true)
-                ],
-              keyboardType: TextInputType.number,       
-                  )
-                  ),
+            // SizedBox(height: 20,),
+            // Container( alignment: Alignment.topLeft,height: 19,
+            //   child: Text('Ingrese Monto de víaticos',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),),
+            //   Container(
+            //           width: MediaQuery.of(context).size.width * 0.9,
+            //         child: TextFormField(                      
+            //         controller: Monto,
+            //         style: TextStyle(color: Colors.black),   
+            //         inputFormatters: [
+            //   ThousandsFormatter(allowFraction: true)
+            //     ],
+            //   keyboardType: TextInputType.number,       
+            //       )
+            //       ),
               SizedBox(height: 30),
               
           Text('Seleccione la fecha de inicio y de fin del viaje',style: TextStyle(fontSize: 13,color: Colors.black),                                    ),
