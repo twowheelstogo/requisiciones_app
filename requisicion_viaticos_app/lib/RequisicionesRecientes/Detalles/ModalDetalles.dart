@@ -32,7 +32,6 @@ class Detalles_ extends State<Detalles> {
        Column(children: [
          SizedBox(height: 30,),
          Text('Detalles de requisiciones',style:TextStyle(fontSize: 18)),
-
          ListaFiltra().length > 0 ?           
         Column(children: [for(var tmp in ListaFiltra()) DetallesCard(tmp,'Visualizar Factura')],)
         : Container(

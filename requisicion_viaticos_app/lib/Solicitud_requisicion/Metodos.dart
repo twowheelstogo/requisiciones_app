@@ -117,8 +117,7 @@ class ListadoAgencias{
     Map<String,String> DiccionarioCostos = {};
 
     bool Bandera = false;
-    String paginacion = "";
-    String Desayuno = "", Almuerzo = "", Cena= "", Gasolina= "", Hospedaje= "";
+    String paginacion = "";    
     do
     {    
     final Response = await ObtenerAgencias(paginacion);
@@ -156,9 +155,7 @@ class ListadoAgencias{
     }
     }
     while(Bandera != true);
-    
-    print('AQUI: '+Desayuno);
-
+   
     Costos(DiccionarioCostos); 
     return [Agencias,Diccionario,DiccionarioCostos];    
   }

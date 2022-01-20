@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/Facturas/Switch.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/Metodos.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/Detalles/ModalDetalles.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/Facturas/ModalFacturas.dart';
@@ -33,16 +34,16 @@ class PermisosRecientesRequestCard extends StatelessWidget {
           builder: (context) {
       return 
       FractionallySizedBox(
-        heightFactor: 0.9,
-        child: Facturas(historial)
+        heightFactor: 1,
+        child: Switch_(historial)
+        //Facturas(historial)
       );      
     });
   }  
 
     return 
-    Card(    
-      
-      shape: RoundedRectangleBorder(
+    Card(          
+    shape: RoundedRectangleBorder(
     side: BorderSide(color: Colors.blue.shade400, width: 5),
     borderRadius: BorderRadius.circular(10),
   ),
@@ -56,7 +57,7 @@ class PermisosRecientesRequestCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: 10,),
-                Text('Agencia: ' +  historial.Agencias.toLowerCase(),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),  SizedBox(height: 5,),
+                Text('Región: ' +  historial.Agencias.toLowerCase(),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),  SizedBox(height: 5,),
                 Text('Inicio viaje: ' + DateFormat("yyyy-MM-dd").format(DateTime.parse(historial.Inicio)),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500)),
                 SizedBox(height: 5,),
                 Text('Fin viaje: ' + DateFormat("yyyy-MM-dd").format(DateTime.parse(historial.Fin)),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500)), SizedBox(height: 5,),

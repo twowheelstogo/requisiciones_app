@@ -1,58 +1,62 @@
 import 'dart:io';
-import 'dart:io' as io;
+import 'package:intl/intl.dart';
+import 'package:pattern_formatter/numeric_formatter.dart';
+import 'package:requisicion_viaticos_app/Components/SpinnerImage.dart';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/Facturas/firebase_api.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter/services.dart';
+import 'package:path/path.dart';
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:path/path.dart';
-import 'package:pattern_formatter/numeric_formatter.dart';
-import 'package:requisicion_viaticos_app/RequisicionesRecientes/Facturas/firebase_api.dart';
-import 'package:requisicion_viaticos_app/Components/SpinnerImage.dart';
-import 'package:requisicion_viaticos_app/Components/Spinner.dart';
-import 'package:requisicion_viaticos_app/RequisicionesRecientes/Metodos.dart';
-import 'package:intl/intl.dart';
-import 'package:requisicion_viaticos_app/RequisicionesRecientes/Facturas/Imagen.dart';
-import 'package:uuid/uuid.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/Metodos.dart';
+import 'package:uuid/uuid.dart';
+import 'package:requisicion_viaticos_app/Components/Spinner.dart';
 
-class UploadingImageToFirebaseStorage extends StatefulWidget {
-  
-  RequisicionesFormato historial;  
-  UploadingImageToFirebaseStorage(this.historial,{Key ? key}) : super(key: key);
+class UploadFile extends StatefulWidget {
+  RequisicionesFormato historial; 
+  UploadFile(this.historial,{Key ? key}) : super(key: key);
   @override
-  _UploadingImageToFirebaseStorageState createState() =>
-      _UploadingImageToFirebaseStorageState();
+  UploadFile_ createState() => UploadFile_();
 }
 
-class _UploadingImageToFirebaseStorageState
-    extends State<UploadingImageToFirebaseStorage> {
-   File ? _imageFile;
-   bool Bandera = false;
-   bool Bandera2 = false;
-   UploadTask? task;
+class UploadFile_ extends State<UploadFile> {
+  UploadTask? task;
+  File? file;
+  bool Bandera = false,Mensaje = false;
+  String ID1 = "";  
+  String URL1 = "";  
+  var uuid = Uuid();  
+  String path_ = "";
    List _gasto =
   ["Seleccione tipo de gasto","HOSPEDAJE","COMIDA","GASOLINA"];
   List<DropdownMenuItem<String>> _dropDownMenuItems = [];
   String _current = "";
   TextEditingController Monto = TextEditingController();  
   TextEditingController _date_ = TextEditingController();  
-  TextEditingController _date2_ = TextEditingController();  
+  TextEditingController _date2_ = TextEditingController(); 
   DateTime _dateTime = DateTime.now();
   DateTime _dateTime2 = DateTime.now();
-  String ID1 = "";
-  String ID2 = "";
-  String URL1 = "";
-  String URL2 = "";
-  var uuid = Uuid();  
 
-  void showToast(String mensaje) => Fluttertoast.showToast(
-    msg: mensaje,
-    fontSize: 16,
-  );
+   void initState() {
+    _dropDownMenuItems = getDropDownMenuItems();
+    _current = _dropDownMenuItems[0].value.toString();
+    Monto.text = "";
+    ID1 = uuid.v1();    
+    super.initState();
+  }
 
+   void changedDropDownItem(String selectedCity) {
+    setState(() {
+      _current = selectedCity;
+    });
+  }
 
-  List<DropdownMenuItem<String>> getDropDownMenuItems() {
+   List<DropdownMenuItem<String>> getDropDownMenuItems() {
     List<DropdownMenuItem<String>> items = [];
     for (String city in _gasto) {
       items.add(new DropdownMenuItem(
@@ -62,39 +66,35 @@ class _UploadingImageToFirebaseStorageState
     }
     return items;
   }  
-
-
   
+  void showToast(String mensaje) => Fluttertoast.showToast(
+    msg: mensaje,
+    fontSize: 16,
+  );
 
-  void initState() {
-    _dropDownMenuItems = getDropDownMenuItems();
-    _current = _dropDownMenuItems[0].value.toString();
-    Monto.text = "";
-    ID1 = uuid.v1();
-    ID2 = uuid.v4();
-    super.initState();
+    Future selectFile(context) async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+
+    if (result == null) {
+        setState(() {
+        Mensaje = false;
+        });
+    }
+    else
+    {
+        final path = result.files.single.path!;
+        setState(() => file = File(path));
+        setState(() {
+        Mensaje = true;
+        path_ = path.toString();
+        });
+        await uploadFile(context);
+    }  
   }
 
-   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-    
-
-  @override      
-  final picker = ImagePicker();
-
-
-  Future pickImage(context,int Opcion) async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
-
-    setState(() {
-      _imageFile = File(pickedFile!.path);
-    });
-
-    await uploadFile(context,Opcion);
-  }
-
-  Future uploadFile(context,int Opcion) async { 
+  Future uploadFile(context) async { 
     showDialog(context: context, builder: (_)=>Spinner2(task),barrierDismissible: false);
-    if (_imageFile == null) 
+    if (file == null) 
     {
       Navigator.of(context).pop(true);     
       showToast('Ha ocurrido un error, intente nuevemente.');
@@ -103,11 +103,12 @@ class _UploadingImageToFirebaseStorageState
       //    
       return;
     }
+
+    
+    String fileName = ID1 + extension(path_);
+    final destination = 'Facturas/$fileName';
         
-    String fileName = Opcion == 1 ? ID1 : ID2;
-    final destination = 'Facturas/$fileName.jpg';
-        
-    task = FirebaseApi.uploadFile(destination, _imageFile!);
+    task = FirebaseApi.uploadFile(destination, file!);
     setState(() {});
 
     if (task == null) 
@@ -121,26 +122,16 @@ class _UploadingImageToFirebaseStorageState
     
     final snapshot = await task!.whenComplete(() {});    
     final urlDownload = await snapshot.ref.getDownloadURL();
-        
 
-    if(Opcion == 1)
-    {
     setState(() {
       Bandera = true;
       URL1 = urlDownload;
-    });}
-    else{
-      setState(() {
-      Bandera2 = true;
-      URL2 = urlDownload;
-    });}    
-
-    showToast('Imagen cargada exitosamente.');
+    });        
+    showToast('Archivo cargado exitosamente.');
      print("exito");
     Navigator.of(context).pop(true);  
      //openSnackBarWithAction("Imagen cargada exitosamente.");
-     //_showScaffold('Imagen cargrada exitosamente.');     
-        
+     //_showScaffold('Imagen cargrada exitosamente.');             
   }
 
   Future<void> CrearDetallesLiquidacion(context) async {
@@ -148,7 +139,7 @@ class _UploadingImageToFirebaseStorageState
     if(_dateTime.toString().length > 0 && _current.length > 0 && Monto.text.toString().length > 0 && URL1.length > 0)
     {
       showDialog(context: context, builder: (_)=>Spinner(),barrierDismissible: false);
-    final Response = await RequisicionesRecientes_().crearDetallesLiquidacion(_dateTime.toString(),_current,double.parse(Monto.text.replaceAll(',', '')),URL1,URL2,widget.historial.ID,widget.historial.ID_Tarifario);        
+    final Response = await RequisicionesRecientes_().crearDetallesLiquidacion(_dateTime.toString(),_current,double.parse(Monto.text.replaceAll(',', '')),URL1,'',widget.historial.ID,widget.historial.ID_Tarifario);        
 
     if(Response.statusCode == 200)
     {
@@ -167,7 +158,6 @@ class _UploadingImageToFirebaseStorageState
     }
   }
 
-  
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
         context: context,
@@ -195,14 +185,12 @@ class _UploadingImageToFirebaseStorageState
             _date2_.text = DateFormat("yyyy-MM-dd").format(picked);          
           });
     }
- 
+
 
   @override
   Widget build(BuildContext context)  {    
-    final fileName = _imageFile != null ? basename(_imageFile!.path) : 'No File Selected';         
-    return    
-    SingleChildScrollView(
-      child: 
+    final fileName = file != null ? basename(file!.path) : 'No se ha seleccionado ningún archivo';         
+    return     
     Column(      
         children: [ 
           SizedBox(height: 50,),                              
@@ -210,21 +198,21 @@ class _UploadingImageToFirebaseStorageState
               child: Text('Detalles de víaticos',style: TextStyle(fontSize: 18,color: Colors.black,),textAlign: TextAlign.center,),),                
               SizedBox(height: 40,),              
                   Inicio(context),                
-                SizedBox(height: 35,),                                
-                Container(                                                
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(30.0),
-                          child:                           
-                              Column(children: [
-                                MostrarFecha('Seleccione fecha de consumo de factura',context,Bandera,_date_,1),
-                                SeleccionarImagen(context,'Factura parte 1','Obligatorio*',Colors.red,Bandera)   ,
-                                SizedBox(height: 25,),                                       
-                                SeleccionarImagen(context,'Factura parte 2','Opcional',Colors.black,Bandera2)   
-                              ],)                                                       
-                          //fin condicion
-                        ),
-                      ),
-                      SizedBox(height: 40,),    
+                SizedBox(height: 35,),  
+                Container( alignment: Alignment.center,width: MediaQuery.of(context).size.width * 0.9,
+                child:    
+                 Column(children: [
+                   MostrarFecha('Seleccione fecha de consumo de factura',context,Bandera,_date_,1)
+                         ,ElevatedButton_(
+                                  context,
+                                  Icons.attach_file,
+                                  'Seleccione factura electronica',                                
+                                ),                                
+                    SizedBox(height: 20,),
+                   fileName != null ? Text(fileName.toString(),style: TextStyle(fontWeight: FontWeight.w600),) : Container()
+                 ],)                                 
+                ),  
+                      SizedBox(height: 40,), 
                     Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -232,35 +220,8 @@ class _UploadingImageToFirebaseStorageState
             FlatButton(onPressed: () {Navigator.pop(context);}, child: Text('Cancelar',style: TextStyle(fontSize: 17),)),            
           ],
         )                  
-              ],                  
-      )   
+              ],      
     );
-  }
-
-  Widget SeleccionarImagen(context,String Label,String Opcion,Color Colorcito,bool Bandera)
-  {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-            FlatButton(
-                            child: 
-                            Column(children: [  
-                            Text(Opcion,style: TextStyle(color: Colorcito),),
-                            Bandera == true
-                              ? 
-                            Text('Actualizar $Label') : Text('Tomar foto de $Label')  ,
-                            SizedBox(height: 10,),   
-                            Icon(
-                              Icons.add_a_photo,
-                              color: Colors.black,
-                              size: 35,
-                            ),],),
-                            onPressed: () async{ await pickImage(context,Opcion == 'Obligatorio*' ? 1 : 0);},
-                          ),
-                          Bandera == true
-                              ? 
-                          FlatButton(onPressed: () {VisualizaImagen(context);}, child: Text('Vista previa')) : Container()
-      ],);
   }
 
   Widget Inicio(context)
@@ -325,43 +286,31 @@ class _UploadingImageToFirebaseStorageState
                 SizedBox(height: 35,),              
     ],) );
   }
-
-  Widget FormatoBoton(context,Color Colorcito,String Mensaje)
-  {
-    return     ButtonTheme(
-                                  
-                                  minWidth: MediaQuery.of(context).size.width * 0.9,          
-                        child:    OutlineButton(                                      
-                                 borderSide: BorderSide(color: Colorcito,width: 1),                                                           
-                                onPressed: ()  async {  
-                                            await CrearDetallesLiquidacion(context);
-                                 },
-                                child: Text(
-                                  Mensaje,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                )));
-  }
-
   
+  Widget ElevatedButton_(context,IconData icon, String text)
+    {
+      return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Colors.blue.shade400,
+          minimumSize: Size.fromHeight(50),
+        ),
+        child: ButtonWidget(icon,text,context),
+        onPressed: () async {await selectFile(context);},
+      );
+    }
 
-  void VisualizaImagen(context){
-    showModalBottomSheet(context: context,
-        isScrollControlled: true,
-        isDismissible: false,
-        enableDrag: false,
-          builder: (context) {
-      return Imagen(_imageFile);
-    });
-  }
-
-   void changedDropDownItem(String selectedCity) {
-    setState(() {
-      _current = selectedCity;
-    });
-  }
-  
+    Widget ButtonWidget(IconData icon, String text,context)
+    {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 28),
+          SizedBox(width: 16),
+          Text(
+            text,
+            style: TextStyle(fontSize: 15, color: Colors.white),
+          ),
+        ],
+      );
+    }
 }

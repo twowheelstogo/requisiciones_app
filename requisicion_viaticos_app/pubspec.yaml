@@ -55,6 +55,10 @@ dependencies:
   firebase_analytics: ^9.0.4
   file_picker: ^4.3.0
   fluttertoast: ^8.0.8
+  dio: ^4.0.4
+  path_provider: ^2.0.8
+  permission_handler: ^8.3.0
+  open_file: ^3.2.1
 
 dev_dependencies:
   flutter_test:

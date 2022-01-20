@@ -112,7 +112,8 @@ Future<List<RequisicionesFormato>> HistorialRequisiciones_() async
                         width: MediaQuery.of(context).size.width * 0.9,
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         child: TextFieldDinamico__(
-                            Agencia, 'Busqueda por Agencia')),
+                            Agencia, 'Busqueda por región')),
+        
         ListaFiltrada().length > 0 ?           
         Column(children: [for(var tmp in ListaFiltrada()) PermisosRecientesRequestCard(tmp,lstActivas)],)
         : Container(alignment:Alignment.topCenter ,child: Column(children: [SizedBox(height: MediaQuery.of(context).size.width * 0.5,) ,Text('Sin requisiciones recientes.',style:TextStyle(fontSize: 17))],))             
