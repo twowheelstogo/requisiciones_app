@@ -62,7 +62,7 @@ class PermisosRecientesRequestCard extends StatelessWidget {
                 SizedBox(height: 5,),
                 Text('Fin viaje: ' + DateFormat("yyyy-MM-dd").format(DateTime.parse(historial.Fin)),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500)), SizedBox(height: 5,),
                 Text('Monto víaticos: Q ' + double.parse(historial.Monto).toString() ,style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500)),SizedBox(height: 5,),                
-                Text('Liquidado: Q ' + historial.LIQUIDADO.toString(),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
+                Text('Liquidado: Q ' + double.parse(historial.LIQUIDADO.toString()).toStringAsFixed(2),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
                 SizedBox(height: 3,),   
                  Row(
           mainAxisAlignment: MainAxisAlignment.center,
