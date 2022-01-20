@@ -102,7 +102,7 @@ Future<List<Historial>> HistorialRequisiciones_() async
                         width: MediaQuery.of(context).size.width * 0.9,
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         child: TextFieldDinamico__(
-                            Agencia, 'Busqueda por Agencia')),
+                            Agencia, 'Busqueda por Región')),
         ListaFiltrada().length > 0 ?           
         Column(children: [for(var tmp in ListaFiltrada())
             PermisosRequestCard(tmp)],)

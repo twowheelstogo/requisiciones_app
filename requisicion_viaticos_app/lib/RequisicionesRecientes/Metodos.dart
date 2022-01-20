@@ -18,6 +18,7 @@ class RequisicionesFormato with ChangeNotifier {
   final String DISPONIBLE_HOSPEDAJE;
   final String DISPONIBLE_GASOLINA;
   final String DISPONIBLE_COMIDA;
+  final String LIQUIDADO;
 
   RequisicionesFormato({
     required this.Inicio,
@@ -29,7 +30,8 @@ class RequisicionesFormato with ChangeNotifier {
     required this.ID_Tarifario,
     required this.DISPONIBLE_HOSPEDAJE,
     required this.DISPONIBLE_GASOLINA,
-    required this.DISPONIBLE_COMIDA
+    required this.DISPONIBLE_COMIDA,
+    required this.LIQUIDADO
   });
 
 }
@@ -66,9 +68,10 @@ class RequisicionesRecientes_
           DISPONIBLE_GASOLINA: tmp[i]["fields"]["DISPONIBLE GASOLINA"] == null ?
           '0' : tmp[i]["fields"]["DISPONIBLE GASOLINA"][0].toString(),
           DISPONIBLE_COMIDA: tmp[i]["fields"]["DISPONIBLE COMIDA"] == null ? '0'
-          : tmp[i]["fields"]["DISPONIBLE COMIDA"][0].toString()
-          ),
-          
+          : tmp[i]["fields"]["DISPONIBLE COMIDA"][0].toString(),
+          LIQUIDADO: tmp[i]["fields"]["LIQUIDADO"] == null ? '0'
+          : tmp[i]["fields"]["LIQUIDADO"].toString()
+          ),                    
           );
         }
       }
