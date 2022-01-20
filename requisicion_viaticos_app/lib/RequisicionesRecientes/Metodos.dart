@@ -15,6 +15,9 @@ class RequisicionesFormato with ChangeNotifier {
   final String Monto;
   final String ID;
   final String ID_Tarifario;
+  final String DISPONIBLE_HOSPEDAJE;
+  final String DISPONIBLE_GASOLINA;
+  final String DISPONIBLE_COMIDA;
 
   RequisicionesFormato({
     required this.Inicio,
@@ -23,7 +26,10 @@ class RequisicionesFormato with ChangeNotifier {
     required this.Status,
     required this.Monto,
     required this.ID,
-    required this.ID_Tarifario
+    required this.ID_Tarifario,
+    required this.DISPONIBLE_HOSPEDAJE,
+    required this.DISPONIBLE_GASOLINA,
+    required this.DISPONIBLE_COMIDA
   });
 
 }
@@ -54,7 +60,13 @@ class RequisicionesRecientes_
           Status: tmp[i]["fields"]["STATUS"].toString(), 
           ID: tmp[i]["fields"]["ID"].toString(),
           Monto: tmp[i]["fields"]["MONTO_VIATICOS"].toString(),
-          ID_Tarifario: tmp[i]["fields"]["TARIFARIO_VIATICOS"][0].toString()
+          ID_Tarifario: tmp[i]["fields"]["TARIFARIO_VIATICOS"][0].toString(),
+          DISPONIBLE_HOSPEDAJE: tmp[i]["fields"]["DISPONIBLE HOSPEDAJE"] == null ?
+          '0' : tmp[i]["fields"]["DISPONIBLE HOSPEDAJE"][0].toString(),          
+          DISPONIBLE_GASOLINA: tmp[i]["fields"]["DISPONIBLE GASOLINA"] == null ?
+          '0' : tmp[i]["fields"]["DISPONIBLE GASOLINA"][0].toString(),
+          DISPONIBLE_COMIDA: tmp[i]["fields"]["DISPONIBLE COMIDA"] == null ? '0'
+          : tmp[i]["fields"]["DISPONIBLE COMIDA"][0].toString()
           ),
           
           );

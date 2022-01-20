@@ -33,7 +33,7 @@ class UploadFile_ extends State<UploadFile> {
   var uuid = Uuid();  
   String path_ = "";
    List _gasto =
-  ["Seleccione tipo de gasto","HOSPEDAJE","COMIDA","GASOLINA"];
+  ["Seleccione tipo de gasto","HOSPEDAJE","COMIDA","GASOLINA","OTROS"];
   List<DropdownMenuItem<String>> _dropDownMenuItems = [];
   String _current = "";
   TextEditingController Monto = TextEditingController();  
@@ -186,6 +186,19 @@ class UploadFile_ extends State<UploadFile> {
           });
     }
 
+    String MontoDisponible(String tipo)
+    {
+     String res = (tipo == "HOSPEDAJE" ? 
+              'Pendiente por liquidar: Q ${double.parse(widget.historial.DISPONIBLE_HOSPEDAJE).toStringAsFixed(2)}'
+              :
+              tipo == "COMIDA" ? 
+              'Pendiente por liquidar: Q ${double.parse(widget.historial.DISPONIBLE_COMIDA).toStringAsFixed(2)}' :
+
+              tipo == "GASOLINA" ? 
+              'Pendiente por liquidar: Q ${double.parse(widget.historial.DISPONIBLE_GASOLINA).toStringAsFixed(2)}' : ''
+               );
+        return res;
+    }
 
   @override
   Widget build(BuildContext context)  {    
@@ -226,7 +239,8 @@ class UploadFile_ extends State<UploadFile> {
 
   Widget Inicio(context)
   {
-    return Column(children: [
+    return       
+    Column(children: [
   Container(
               width: MediaQuery.of(context).size.width * 0.9,
               child: new DropdownButton(                 
@@ -234,9 +248,12 @@ class UploadFile_ extends State<UploadFile> {
                 items: _dropDownMenuItems,
                 onChanged: (value) {changedDropDownItem(value.toString());},
               ),),    
-              SizedBox(height: 20,),
-            Container( alignment: Alignment.topLeft,height: 19,width: MediaQuery.of(context).size.width * 0.9,
-              child: Text('Ingrese Monto de víaticos',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),),          
+              SizedBox(height: 20,),              
+                                                                                        
+               Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: Text('Ingrese Monto de víaticos',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),),                                    
+
                Container(
                 width: MediaQuery.of(context).size.width * 0.9,
                 child: TextFormField(                      
@@ -249,6 +266,15 @@ class UploadFile_ extends State<UploadFile> {
                   )             
             ),
 
+            MontoDisponible(this._current).length > 0 ?
+            Column(children: [
+              SizedBox(height: 10),
+            Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: 
+                Text(MontoDisponible(this._current),style: TextStyle(fontSize: 15,color: Colors.red),textAlign: TextAlign.left,),
+            )
+            ],)  : Container()         
     ],);
   }
 
