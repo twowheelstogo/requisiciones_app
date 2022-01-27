@@ -19,7 +19,6 @@ class Autenticacion
     prefs.setString('Genero', Genero);    
   }
 
-
    // ignore: non_constant_identifier_names
   Future<List> Autenticar(String NombreUsuario) async {
     bool bandera = false;

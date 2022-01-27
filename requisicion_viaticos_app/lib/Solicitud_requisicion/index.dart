@@ -9,8 +9,8 @@ class Solicitud extends StatefulWidget {
     
   final Map<String,String> Diccionario;  
   final List<String> Agencias;  
-  final String Desayuno,Almuerzo,Cena,Gasolina,Hospedaje;
-  const Solicitud(this.Diccionario,this.Agencias,this.Desayuno,this.Almuerzo,this.Cena,this.Gasolina,this.Hospedaje,{Key? key}) : super(key: key);
+  final String Desayuno,Almuerzo,Cena,Gasolina_super,Gasolina_diesel,Gasolina_regular,Hospedaje;
+  const Solicitud(this.Diccionario,this.Agencias,this.Desayuno,this.Almuerzo,this.Cena,this.Gasolina_super,this.Gasolina_diesel,this.Gasolina_regular,this.Hospedaje,{Key? key}) : super(key: key);
   Solicitud_ createState() => Solicitud_();
 }
 
@@ -34,7 +34,7 @@ class Solicitud_ extends State<Solicitud> {
       Container(        
         child: Column(
           children: [            
-            CalendarModal(widget.Diccionario,widget.Agencias,widget.Desayuno,widget.Almuerzo,widget.Cena,widget.Gasolina,widget.Hospedaje),            
+            CalendarModal(widget.Diccionario,widget.Agencias,widget.Desayuno,widget.Almuerzo,widget.Cena,widget.Gasolina_diesel,widget.Gasolina_super,widget.Gasolina_regular,widget.Hospedaje),            
           ],
         ),
       )               

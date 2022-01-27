@@ -62,7 +62,9 @@ class ListadoAgencias{
   }
     
    Future<http.Response> crearRequisicion(String Inicio, String Fin,double Monto,String ID_AGENCIA,String ID_USUARIO,String ID2,
-   String Desayuno,String Almuerzo,String Cena,String Gasolina,String Hospedaje) async{
+   String Desayuno,String Almuerzo,String Cena,String Gasolina,String Hospedaje,
+   bool bandera_comida,bool bandera_gasolina,bool bandera_hospedaje
+   ) async{
 
      DateTime dt1 = DateTime.parse(Fin);
      DateTime dt2 = DateTime.parse(Inicio);     
@@ -73,6 +75,10 @@ class ListadoAgencias{
      double MontoHotel =  double.parse(Hospedaje) * double.parse(diff.inDays.toString());
      double MontoComida = ( double.parse(Desayuno) + double.parse(Almuerzo) + double.parse(Cena)) * double.parse(diff.inDays.toString());
      double MontoGasolina=  double.parse(Gasolina) * double.parse(diff.inDays.toString());
+
+     MontoHotel = bandera_hospedaje ? MontoHotel : 0;
+     MontoComida = bandera_comida ? MontoComida : 0;
+     MontoGasolina = bandera_gasolina ? MontoGasolina : 0;
        
     Map<String, String> headers = {
       'Content-type': 'application/json',
@@ -90,7 +96,7 @@ class ListadoAgencias{
       "TARIFARIO_VIATICOS" : [ID2],
       "MONTO_HOTEL" : MontoHotel,
       "MONTO_COMIDA" : MontoComida,
-      "MONTO_GASOLINA" : MontoGasolina,
+      "MONTO_GASOLINA" : MontoGasolina,      
     };
 
     final bodyEncoded = json.encode({
@@ -139,8 +145,10 @@ class ListadoAgencias{
         if(!DiccionarioCostos.containsKey("DESAYUNO")){
           DiccionarioCostos["DESAYUNO"] = Decoded["records"][i]["fields"]["COSTO_DESAYUNO"][0].toString();
           DiccionarioCostos["ALMUERZO"] = Decoded["records"][i]["fields"]["COSTO_ALMUERZOS"][0].toString();
-          DiccionarioCostos["CENA"] = Decoded["records"][i]["fields"]["COSTO_CENA"][0].toString();
-          DiccionarioCostos["GASOLINA"] = Decoded["records"][i]["fields"]["COSTO_GASOLINA"][0].toString();
+          DiccionarioCostos["CENA"] = Decoded["records"][i]["fields"]["COSTO_CENA"][0].toString();          
+          DiccionarioCostos["GASOLINA SUPER"] = Decoded["records"][i]["fields"]["COSTO_GASOLINA_SUPER"][0].toString();
+          DiccionarioCostos["GASOLINA REGULAR"] = Decoded["records"][i]["fields"]["COSTO_GASOLINA_REGULAR"][0].toString();
+          DiccionarioCostos["GASOLINA DIESEL"] = Decoded["records"][i]["fields"]["COSTO_GASOLINA_DIESEL"][0].toString();
           DiccionarioCostos["HOSPEDAJE"] = Decoded["records"][i]["fields"]["COSTO_HOSPEDAJE"][0].toString();
         }
       }

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/Actividades/A%C3%B1adirActividades.dart';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/Actividades/VerActividades.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/Facturas/Switch.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/Metodos.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/Detalles/ModalDetalles.dart';
@@ -41,6 +43,30 @@ class PermisosRecientesRequestCard extends StatelessWidget {
     });
   }  
 
+  void openAddActividades(){
+    showModalBottomSheet(context: context,
+        isScrollControlled: true,
+          builder: (context) {
+      return 
+      FractionallySizedBox(
+        heightFactor: 0.9,
+        child: AddActividades()
+      );      
+    });
+  }
+
+  void openVerActividades(){
+    showModalBottomSheet(context: context,
+        isScrollControlled: true,
+          builder: (context) {
+      return 
+      FractionallySizedBox(
+        heightFactor: 0.9,
+        child: VerActividades()
+      );      
+    });
+  }
+
     return 
     Card(          
     shape: RoundedRectangleBorder(
@@ -67,10 +93,17 @@ class PermisosRecientesRequestCard extends StatelessWidget {
                  Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FlatButton(onPressed: () {openDetalles(historial.ID_Tarifario);}, child: Text('Ver Detalles',style: TextStyle(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.solid),)),
-            FlatButton(onPressed: () {openFacturas();}, child: Text('Añadir facturas',style: TextStyle(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.solid),)),            
+            FlatButton(onPressed: () {openDetalles(historial.ID_Tarifario);}, child: Text('Ver Facturas',style: TextStyle(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.solid),)),
+            FlatButton(onPressed: () {openFacturas();}, child: Text('Añadir facturas',style: TextStyle(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.solid),)),                        
           ],
-        )                                                 
+        ),                
+                 Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            FlatButton(onPressed: () {openVerActividades();}, child: Text('Ver Actividades',style: TextStyle(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.solid),)),
+            FlatButton(onPressed: () {openAddActividades();}, child: Text('Añadir activides',style: TextStyle(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.solid),)),                        
+          ],
+        )                                                                                                  
               ],
             ),)
       ])                                    

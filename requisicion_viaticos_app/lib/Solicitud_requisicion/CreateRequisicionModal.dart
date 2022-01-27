@@ -10,29 +10,37 @@ import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/index.dart';
 import 'dart:convert';
+  
 
 class CalendarModal extends StatefulWidget {
   
     final Map<String,String> Diccionario;  
     final List<String> Agencias;  
-    final String Desayuno,Almuerzo,Cena,Gasolina,Hospedaje;
+    final String Desayuno,Almuerzo,Cena,Gasolina_diesel,Gasolina_super,Gasolina_regular,Hospedaje;
   
 
-  const CalendarModal(this.Diccionario,this.Agencias,this.Desayuno,this.Almuerzo,this.Cena,this.Gasolina,this.Hospedaje,{Key ? key}) : super(key: key);
+  const CalendarModal(this.Diccionario,this.Agencias,this.Desayuno,this.Almuerzo,this.Cena,this.Gasolina_diesel,this.Gasolina_super,this.Gasolina_regular,this.Hospedaje,{Key ? key}) : super(key: key);
   
   @override
   _CalendarModalState createState() => _CalendarModalState();
 }
 
 class _CalendarModalState extends State<CalendarModal> {
-  String _initDate ="";
-  String _endDate ="";
-  String selectedValue = "";
+  
+  DateRangePickerSelectionMode _selectionMode =
+      DateRangePickerSelectionMode.multiRange;
+  DateRangePickerController _controller = DateRangePickerController();
+  
   String ID_USUARIO = "";
   String ID_USUARIO2 = "";
   String Hospedaje = "",Desayuno= "",Almuerzo = "",Cena = "", Gasolina = "";
+  String precioGasolina = "";
   bool _selected = false;
-  TextEditingController Monto = TextEditingController();
+  bool bandera_hospedaje = false, bandera_gasolina = false, bandera_comida = false;
+  TextEditingController Monto = TextEditingController();    
+   int _radioValue = 0;
+    
+  List ArrayDates = [];
   
   var _suggestionTextFieldControler = new TextEditingController();
 
@@ -63,29 +71,51 @@ class _CalendarModalState extends State<CalendarModal> {
         ID_USUARIO2 = val;             
         }));
   }  
- 
-  void _onSelectionChanged(DateRangePickerSelectionChangedArgs args){
-    if(args.value is PickerDateRange){
-      setState(() {
-        _initDate = DateFormat("yyyy-MM-dd").format(args.value.startDate).toString();
-        _endDate = DateFormat("yyyy-MM-dd").format(args.value.endDate??args.value.startDate).toString();
-        _selected =true;
-      });
-    }
-  }
 
+   void _handleRadioValueChange(int value) {
+    setState(() {
+      _radioValue = value;
+
+      switch (_radioValue) {
+        case 0:
+        precioGasolina = widget.Gasolina_regular;          
+          break;
+        case 1:
+        precioGasolina = widget.Gasolina_super;                  
+          break;
+        case 2:
+        precioGasolina = widget.Gasolina_diesel;          
+          break;
+      }
+    });
+  }
+   
   void CrearRequisicionViaticos() async{
     
-    if(_initDate.length > 0 && _endDate.length > 0 && ID_AIRTABLE.length > 0)
+    if(!bandera_gasolina && !bandera_hospedaje && !bandera_comida)
+    {
+      final _snackbar = SnackBar(content: Text('Debe de seleccionar los gastos que necesite.'));
+      ScaffoldMessenger.of(context).showSnackBar(_snackbar);
+    }
+    else{
+    if(ArrayDates.length > 0 && ID_AIRTABLE.length > 0)
     {
     showDialog(context: context, builder: (_)=>Spinner(),barrierDismissible: false);  
     final Res = await ListadoAgencias().crearTarifario();
     final Decoded = json.decode(Res.body);
 
     if(Res.statusCode == 200)
-    {
+    {        
+    ArrayDates.sort((a,b) {
+    return a.compareTo(b);
+    });
+
+    String _initDate = ArrayDates[0];
+    String _endDate = ArrayDates[ArrayDates.length];
+
     final Response = await ListadoAgencias().crearRequisicion(_initDate, _endDate,0,ID_AIRTABLE,ID_USUARIO2,Decoded["records"][0]["fields"]["ID"],
-    widget.Desayuno,widget.Almuerzo,widget.Cena,widget.Gasolina,widget.Hospedaje 
+    widget.Desayuno,widget.Almuerzo,widget.Cena,precioGasolina.length == 0 ? "0" : precioGasolina ,widget.Hospedaje,
+    bandera_comida,bandera_gasolina,bandera_hospedaje
     );  
     Navigator.of(context).pop(true);
 
@@ -117,13 +147,18 @@ class _CalendarModalState extends State<CalendarModal> {
       final _snackbar = SnackBar(content: Text('Debe de ingresar todos los campos.'));
          ScaffoldMessenger.of(context).showSnackBar(_snackbar);
     }
-    
+    }    
+  }
+
+  void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {    
+    setState(() {
+      ArrayDates : args.value;
+    });
   }
   
-
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;    
     return     
     Container(
       padding: EdgeInsets.all(8),
@@ -174,14 +209,43 @@ class _CalendarModalState extends State<CalendarModal> {
             //   keyboardType: TextInputType.number,       
             //       )
             //       ),
+            SizedBox(height: 30),
+            // 1 comida, 2 hospedaje, 3 gasolina
+            Text('Seleccione los gastos que necesite que se le proporcione'),
+            new Divider(height: 5.0, color: Colors.black),
+            Row(
+              children: [
+                Row(children: [
+                    Text('Comida'),CheckBox_(1)
+                ],),
+                Row(children: [
+                    Text('Hospedaje'),CheckBox_(2)
+                ],),
+                Row(children: [
+                    Text('Gasolina'),CheckBox_(3)
+                ],),
+              ],
+            ),            
+            bandera_gasolina ?         
+            Column(                            
+              children: [
+              SizedBox(height: 20,),
+              Text('Seleccione tipo de gasolina'),
+              new Divider(height: 5.0, color: Colors.black),
+//              SizedBox(height: 20,),
+              Container(padding: EdgeInsets.all(25.0), child: 
+              ListTitle_(),)
+            ],)          
+             : Container(),
               SizedBox(height: 30),
               
-          Text('Seleccione la fecha de inicio y de fin del viaje',style: TextStyle(fontSize: 13,color: Colors.black),                                    ),
+          Text('Seleccione las fechas de requisición',style: TextStyle(fontSize: 13,color: Colors.black),                                    ),
           Divider(height: 20,  thickness: 1,color: Colors.grey),
           SfDateRangePicker(
             onSelectionChanged: _onSelectionChanged,
-            selectionMode: DateRangePickerSelectionMode.range,
-          ),            
+            selectionMode: DateRangePickerSelectionMode.multiple,
+          ), 
+          SizedBox(height: 20),
           Requsion_('Crear nueva requisición',0,size,Colors.green),               
               ],),
             )                                
@@ -237,5 +301,61 @@ class _CalendarModalState extends State<CalendarModal> {
                                   ),
                                 ))),
                           );
-  }  
+  } 
+  Widget ListTitle_()
+  {
+     return   new Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        new Radio(
+                          value: 0,
+                          groupValue: _radioValue,
+                          onChanged: (value) {
+                            _handleRadioValueChange(int.parse(value.toString()));
+                          },
+                        ),
+                        new Text(
+                          'Regular',
+                          style: new TextStyle(fontSize: 16.0),
+                        ),
+                        new Radio(
+                          value: 1,
+                         groupValue: _radioValue,
+                          onChanged: (value) {
+                            _handleRadioValueChange(int.parse(value.toString()));
+                          },
+                        ),
+                        new Text(
+                          'Super',
+                          style: new TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        new Radio(
+                          value: 2,
+                          groupValue: _radioValue,
+                          onChanged: (value) {
+                            _handleRadioValueChange(int.parse(value.toString()));
+                          },
+                        ),
+                        new Text(
+                          'Diesel',
+                          style: new TextStyle(fontSize: 16.0),
+                        ),
+                      ],
+                    );
+      
+  }
+  Widget CheckBox_(int opcion){
+      // 1 comida, 2 hospedaje, 3 gasolina
+      return Checkbox(
+      checkColor: Colors.white,      
+      value: opcion == 1 ? bandera_comida : opcion == 2 ? bandera_hospedaje : bandera_gasolina,
+      onChanged: (bool? value) {
+        setState(() {
+          opcion == 1 ? bandera_comida = value! : opcion == 2 ? bandera_hospedaje = value! : bandera_gasolina = value!;          
+        });
+      },
+    );  
+  }
 }
