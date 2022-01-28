@@ -76,7 +76,6 @@ class RequisicionesRecientes_
         }
       }
     }
-
     return Historial_;
   }
 
