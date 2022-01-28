@@ -60,21 +60,64 @@ class ListadoAgencias{
       throw(e.message);
     }
   }
+  
+
+  Future<bool> RegistrosActividades(List fechas,String TipoCombustible,String ID,String ID_Agencia) async
+  {    
+    int contador = 0;
+    for(int i =0;i < fechas.length; i++){
+      DateTime nuevo = DateTime.parse(fechas[i]);
+      String tmp = DateFormat("yyyy-MM-dd").format(nuevo).toString();
+      final Response = await crearDetallesActividades(ID,TipoCombustible,tmp,ID_Agencia);
+      if(Response.statusCode == 200) {contador++;}
+    }
+    if(contador == fechas.length){return true;}
+    else{return false;}
+  }
+
+  Future<http.Response> crearDetallesActividades(String ID,String TipoCombustible,String fecha,String ID_Agencia) async
+  {        
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': "Bearer $Token"
+    };
+    
+    Map<String, dynamic> body = {
+      "REQUISICION_VIATICOS"   : [ID.replaceAll(" ","")],
+      "TIPO_COMBUSTIBLE" : TipoCombustible,
+      "FECHA" : fecha,
+      "BANRURAL_CATALOGOS_AGENCIA": [ID_Agencia.replaceAll(" ", "")]      
+    };
+
+    final bodyEncoded = json.encode({
+      "records": [
+        {"fields": body}
+      ]
+    });
+
+    String url = urlApi + 'DETALLES_ACTIVIDADES';
+    print(bodyEncoded);
+    try {
+      final response = await http.post(Uri.parse(url),headers: headers,body: (bodyEncoded));
+      return response;
+    }on http.ClientException catch (e) {
+      throw(e.message);
+    }
+  }
     
    Future<http.Response> crearRequisicion(String Inicio, String Fin,double Monto,String ID_AGENCIA,String ID_USUARIO,String ID2,
    String Desayuno,String Almuerzo,String Cena,String Gasolina,String Hospedaje,
-   bool bandera_comida,bool bandera_gasolina,bool bandera_hospedaje
+   bool bandera_comida,bool bandera_gasolina,bool bandera_hospedaje,String Kilometros
    ) async{
 
      DateTime dt1 = DateTime.parse(Fin);
      DateTime dt2 = DateTime.parse(Inicio);     
-     Duration diff = dt1.difference(dt2);  
-
-     print('AQUI: ' + Almuerzo);
+     Duration diff = dt1.difference(dt2);      
         
      double MontoHotel =  double.parse(Hospedaje) * double.parse(diff.inDays.toString());
      double MontoComida = ( double.parse(Desayuno) + double.parse(Almuerzo) + double.parse(Cena)) * double.parse(diff.inDays.toString());
-     double MontoGasolina=  double.parse(Gasolina) * double.parse(diff.inDays.toString());
+     double MontoGasolina = ((double.parse(Kilometros) / 37) * double.parse(Gasolina))* double.parse(diff.inDays.toString());
 
      MontoHotel = bandera_hospedaje ? MontoHotel : 0;
      MontoComida = bandera_comida ? MontoComida : 0;
@@ -114,6 +157,8 @@ class ListadoAgencias{
       throw(e.message);
     }
   }
+
+
 
 
   Future<List> Agencias() async

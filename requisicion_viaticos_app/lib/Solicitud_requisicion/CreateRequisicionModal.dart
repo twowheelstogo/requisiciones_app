@@ -34,22 +34,21 @@ class _CalendarModalState extends State<CalendarModal> {
   String ID_USUARIO = "";
   String ID_USUARIO2 = "";
   String Hospedaje = "",Desayuno= "",Almuerzo = "",Cena = "", Gasolina = "";
-  String precioGasolina = "";
+  double precioGasolina = 0;
   bool _selected = false;
   bool bandera_hospedaje = false, bandera_gasolina = false, bandera_comida = false;
   TextEditingController Monto = TextEditingController();    
-   int _radioValue = 0;
-    
+  int _radioValue = -1;    
   List ArrayDates = [];
-  
   var _suggestionTextFieldControler = new TextEditingController();
-
   String dropdownvalue = 'Seleccione una opción';   
-  String ID_AIRTABLE = "";
+  String ID_AIRTABLE = "";  
+  String TipoGasolina = "";
   
    @override
   void initState() {      
     _CalendarModalState();
+      Monto.text = "0";
     super.initState();
   }
   
@@ -78,13 +77,22 @@ class _CalendarModalState extends State<CalendarModal> {
 
       switch (_radioValue) {
         case 0:
-        precioGasolina = widget.Gasolina_regular;          
+        setState(() {
+           precioGasolina = double.parse(widget.Gasolina_regular); 
+        TipoGasolina = "REGULAR";
+        });               
           break;
         case 1:
-        precioGasolina = widget.Gasolina_super;                  
+        setState(() {
+              precioGasolina = double.parse(widget.Gasolina_super);                  
+        TipoGasolina = "SUPER";  
+        });          
           break;
         case 2:
-        precioGasolina = widget.Gasolina_diesel;          
+        setState(() {
+           precioGasolina = double.parse(widget.Gasolina_diesel);          
+        TipoGasolina = "DIESEL";
+        });               
           break;
       }
     });
@@ -98,7 +106,10 @@ class _CalendarModalState extends State<CalendarModal> {
       ScaffoldMessenger.of(context).showSnackBar(_snackbar);
     }
     else{
-    if(ArrayDates.length > 0 && ID_AIRTABLE.length > 0)
+    
+    bool bandera = (bandera_gasolina && precioGasolina > 0 && Monto.text != "0") ? true : (!bandera_gasolina) ? true : false;
+    print('LISTA NUEVA 1: $ArrayDates');
+    if(ArrayDates.length > 0 && ID_AIRTABLE.length > 0 && bandera)
     {
     showDialog(context: context, builder: (_)=>Spinner(),barrierDismissible: false);  
     final Res = await ListadoAgencias().crearTarifario();
@@ -111,26 +122,38 @@ class _CalendarModalState extends State<CalendarModal> {
     });
 
     String _initDate = ArrayDates[0];
-    String _endDate = ArrayDates[ArrayDates.length];
+    int total = ArrayDates.length > 0 ? ArrayDates.length - 1 : 0;
+    String _endDate = ArrayDates[total];
 
     final Response = await ListadoAgencias().crearRequisicion(_initDate, _endDate,0,ID_AIRTABLE,ID_USUARIO2,Decoded["records"][0]["fields"]["ID"],
-    widget.Desayuno,widget.Almuerzo,widget.Cena,precioGasolina.length == 0 ? "0" : precioGasolina ,widget.Hospedaje,
-    bandera_comida,bandera_gasolina,bandera_hospedaje
+    widget.Desayuno,widget.Almuerzo,widget.Cena,precioGasolina.toString(),widget.Hospedaje,
+    bandera_comida,bandera_gasolina,bandera_hospedaje, Monto.text
     );  
     Navigator.of(context).pop(true);
 
     if(Response.statusCode == 200)
     {
-         final _snackbar = SnackBar(content: Text('Requisición generada exitosamente.'));                  
+      final Lista = Response.body;
+      final Decoded = json.decode(Lista);
+      bool Response3 = await ListadoAgencias().RegistrosActividades(ArrayDates,TipoGasolina,Decoded["records"][0]["id"].toString(),ID_AIRTABLE);
+      if(Response3)
+      {
+        final _snackbar = SnackBar(content: Text('Requisición generada exitosamente.'));                  
          ScaffoldMessenger.of(context).showSnackBar(_snackbar);
          Monto.clear();
          _initDate = "";
          _endDate = "";         
          ID_AIRTABLE = "";
+      }
+      else
+      {
+        final _snackbar = SnackBar(content: Text('Ha ocurrido un error, intente nuevamente 1.'));
+         ScaffoldMessenger.of(context).showSnackBar(_snackbar);
+      }        
     }        
     else
   {
-        final _snackbar = SnackBar(content: Text('Ha ocurrido un error, intente nuevamente.'));
+        final _snackbar = SnackBar(content: Text('Ha ocurrido un error, intente nuevamente 2.'));
          ScaffoldMessenger.of(context).showSnackBar(_snackbar);
   }
     }
@@ -138,22 +161,25 @@ class _CalendarModalState extends State<CalendarModal> {
       else
   {
         Navigator.of(context).pop(true);
-        final _snackbar = SnackBar(content: Text('Ha ocurrido un error, intente nuevamente.'));
+        final _snackbar = SnackBar(content: Text('Ha ocurrido un error, intente nuevamente 3.'));
          ScaffoldMessenger.of(context).showSnackBar(_snackbar);
   }
 
     }    
     else{
-      final _snackbar = SnackBar(content: Text('Debe de ingresar todos los campos.'));
+      final _snackbar = SnackBar(content: Text('Debe de ingresar todos los campos 4.'));
          ScaffoldMessenger.of(context).showSnackBar(_snackbar);
     }
     }    
   }
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {    
-    setState(() {
-      ArrayDates : args.value;
-    });
+    ArrayDates.clear();
+    for(int i =0; i < args.value.length;i++){
+      ArrayDates.add(args.value[i].toString());
+    }    
+    setState(() {      
+    });    
   }
   
   @override
@@ -195,37 +221,34 @@ class _CalendarModalState extends State<CalendarModal> {
                   print(widget.Diccionario[selection].toString());
               },
             ),
-            // SizedBox(height: 20,),
-            // Container( alignment: Alignment.topLeft,height: 19,
-            //   child: Text('Ingrese Monto de víaticos',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),),
-            //   Container(
-            //           width: MediaQuery.of(context).size.width * 0.9,
-            //         child: TextFormField(                      
-            //         controller: Monto,
-            //         style: TextStyle(color: Colors.black),   
-            //         inputFormatters: [
-            //   ThousandsFormatter(allowFraction: true)
-            //     ],
-            //   keyboardType: TextInputType.number,       
-            //       )
-            //       ),
+            
             SizedBox(height: 30),
             // 1 comida, 2 hospedaje, 3 gasolina
-            Text('Seleccione los gastos que necesite que se le proporcione'),
+            Text('Seleccione los gastos que necesite que se le proporcione'),          
             new Divider(height: 5.0, color: Colors.black),
-            Row(
+
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child:
+            Container(
+            padding: EdgeInsets.all(25.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(children: [
+                  Row(children: [
                     Text('Comida'),CheckBox_(1)
                 ],),
-                Row(children: [
+
+              Row(children: [
                     Text('Hospedaje'),CheckBox_(2)
-                ],),
-                Row(children: [
+                ]),
+
+              Row(children: [
                     Text('Gasolina'),CheckBox_(3)
-                ],),
+                ]),
               ],
-            ),            
+            )),),
+
             bandera_gasolina ?         
             Column(                            
               children: [
@@ -234,7 +257,21 @@ class _CalendarModalState extends State<CalendarModal> {
               new Divider(height: 5.0, color: Colors.black),
 //              SizedBox(height: 20,),
               Container(padding: EdgeInsets.all(25.0), child: 
-              ListTitle_(),)
+              ListTitle_(),),
+              SizedBox(height: 20,),
+            Container( alignment: Alignment.topLeft,height: 19,
+              child: Text('Ingrese km proyectados',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),),
+              Container(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                    child: TextFormField(                      
+                    controller: Monto,
+                    style: TextStyle(color: Colors.black),   
+                    inputFormatters: [
+              ThousandsFormatter(allowFraction: true)
+                ],
+              keyboardType: TextInputType.number,       
+                  )
+                  ),
             ],)          
              : Container(),
               SizedBox(height: 30),
