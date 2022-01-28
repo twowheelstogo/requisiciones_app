@@ -107,8 +107,8 @@ class _CalendarModalState extends State<CalendarModal> {
     }
     else{
     
-    bool bandera = (bandera_gasolina && precioGasolina > 0 && Monto.text != "0") ? true : (!bandera_gasolina) ? true : false;
-    print('LISTA NUEVA 1: $ArrayDates');
+    bool bandera = !bandera_gasolina ? true : (bandera_gasolina && precioGasolina > 0 && Monto.text != "0") ? true : false;    
+    
     if(ArrayDates.length > 0 && ID_AIRTABLE.length > 0 && bandera)
     {
     showDialog(context: context, builder: (_)=>Spinner(),barrierDismissible: false);  
@@ -127,15 +127,17 @@ class _CalendarModalState extends State<CalendarModal> {
 
     final Response = await ListadoAgencias().crearRequisicion(_initDate, _endDate,0,ID_AIRTABLE,ID_USUARIO2,Decoded["records"][0]["fields"]["ID"],
     widget.Desayuno,widget.Almuerzo,widget.Cena,precioGasolina.toString(),widget.Hospedaje,
-    bandera_comida,bandera_gasolina,bandera_hospedaje, Monto.text
+    bandera_comida,bandera_gasolina,bandera_hospedaje, Monto.text,ArrayDates.length
     );  
     Navigator.of(context).pop(true);
 
     if(Response.statusCode == 200)
     {
-      final Lista = Response.body;
+      if(bandera_gasolina)
+      {
+        final Lista = Response.body;
       final Decoded = json.decode(Lista);
-      bool Response3 = await ListadoAgencias().RegistrosActividades(ArrayDates,TipoGasolina,Decoded["records"][0]["id"].toString(),ID_AIRTABLE);
+      bool Response3 = await ListadoAgencias().RegistrosActividades(ArrayDates,TipoGasolina,Decoded["records"][0]["id"].toString(),ID_AIRTABLE,double.parse(Monto.text));
       if(Response3)
       {
         final _snackbar = SnackBar(content: Text('Requisición generada exitosamente.'));                  
@@ -144,12 +146,32 @@ class _CalendarModalState extends State<CalendarModal> {
          _initDate = "";
          _endDate = "";         
          ID_AIRTABLE = "";
+          ID_AIRTABLE = "";         
+         bandera_comida = false;
+         bandera_hospedaje = false;
+         bandera_gasolina = false;
+        setState(() { });
       }
       else
       {
         final _snackbar = SnackBar(content: Text('Ha ocurrido un error, intente nuevamente 1.'));
          ScaffoldMessenger.of(context).showSnackBar(_snackbar);
-      }        
+      } 
+      }
+      else
+      {
+        final _snackbar = SnackBar(content: Text('Requisición generada exitosamente.'));                  
+         ScaffoldMessenger.of(context).showSnackBar(_snackbar);
+         Monto.clear();
+         _initDate = "";
+         _endDate = "";         
+         ID_AIRTABLE = "";         
+         bandera_comida = false;
+         bandera_hospedaje = false;
+         bandera_gasolina = false;
+        setState(() { });
+      }
+             
     }        
     else
   {

@@ -62,20 +62,20 @@ class ListadoAgencias{
   }
   
 
-  Future<bool> RegistrosActividades(List fechas,String TipoCombustible,String ID,String ID_Agencia) async
+  Future<bool> RegistrosActividades(List fechas,String TipoCombustible,String ID,String ID_Agencia,double Kilometros) async
   {    
     int contador = 0;
     for(int i =0;i < fechas.length; i++){
       DateTime nuevo = DateTime.parse(fechas[i]);
       String tmp = DateFormat("yyyy-MM-dd").format(nuevo).toString();
-      final Response = await crearDetallesActividades(ID,TipoCombustible,tmp,ID_Agencia);
+      final Response = await crearDetallesActividades(ID,TipoCombustible,tmp,ID_Agencia,Kilometros);
       if(Response.statusCode == 200) {contador++;}
     }
     if(contador == fechas.length){return true;}
     else{return false;}
   }
 
-  Future<http.Response> crearDetallesActividades(String ID,String TipoCombustible,String fecha,String ID_Agencia) async
+  Future<http.Response> crearDetallesActividades(String ID,String TipoCombustible,String fecha,String ID_Agencia,double Kilometros) async
   {        
     Map<String, String> headers = {
       'Content-type': 'application/json',
@@ -87,7 +87,8 @@ class ListadoAgencias{
       "REQUISICION_VIATICOS"   : [ID.replaceAll(" ","")],
       "TIPO_COMBUSTIBLE" : TipoCombustible,
       "FECHA" : fecha,
-      "BANRURAL_CATALOGOS_AGENCIA": [ID_Agencia.replaceAll(" ", "")]      
+      "BANRURAL_CATALOGOS_AGENCIA": [ID_Agencia.replaceAll(" ", "")] ,
+      "KILOMETROS ESTIMADOS" : Kilometros
     };
 
     final bodyEncoded = json.encode({
@@ -108,16 +109,13 @@ class ListadoAgencias{
     
    Future<http.Response> crearRequisicion(String Inicio, String Fin,double Monto,String ID_AGENCIA,String ID_USUARIO,String ID2,
    String Desayuno,String Almuerzo,String Cena,String Gasolina,String Hospedaje,
-   bool bandera_comida,bool bandera_gasolina,bool bandera_hospedaje,String Kilometros
+   bool bandera_comida,bool bandera_gasolina,bool bandera_hospedaje,String Kilometros,int totalDias
    ) async{
-
-     DateTime dt1 = DateTime.parse(Fin);
-     DateTime dt2 = DateTime.parse(Inicio);     
-     Duration diff = dt1.difference(dt2);      
+   
         
-     double MontoHotel =  double.parse(Hospedaje) * double.parse(diff.inDays.toString());
-     double MontoComida = ( double.parse(Desayuno) + double.parse(Almuerzo) + double.parse(Cena)) * double.parse(diff.inDays.toString());
-     double MontoGasolina = ((double.parse(Kilometros) / 37) * double.parse(Gasolina))* double.parse(diff.inDays.toString());
+     double MontoHotel =  double.parse(Hospedaje) * double.parse(totalDias.toString());
+     double MontoComida = ( double.parse(Desayuno) + double.parse(Almuerzo) + double.parse(Cena)) * double.parse(totalDias.toString());
+     double MontoGasolina = ((double.parse(Kilometros) / 37) * double.parse(Gasolina));
 
      MontoHotel = bandera_hospedaje ? MontoHotel : 0;
      MontoComida = bandera_comida ? MontoComida : 0;
