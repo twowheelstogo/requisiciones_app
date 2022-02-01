@@ -28,10 +28,19 @@ class AddActividades_ extends State<AddActividades> {
   String ID_AIRTABLE = "",ID = "";  
   int _radioValue = -1;       
   List<DropdownMenuItem<String>> _dropDownMenuItems = [];  
+  double costo_vas = 0,costo_pralin = 0;
   List actividades_ =
   ["Seleccione actividad realizada","Traslado de equipo por cierre","Evento especial","Instalación de equipo de computo","Mantenimiento de equipo de computo"]; 
 
   AddActividades_ (){
+    
+          getConstant('COSTO_VAS').then((val) => setState(() {
+            costo_vas = double.parse(val);
+          }));
+
+          getConstant('COSTO_PRALIN_ESCUINTLA').then((val) => setState(() {
+            costo_pralin = double.parse(val);
+          }));
           
           getConstant("IdAIRTABLE").then((val) => setState(() {
           ID = val;                      
@@ -98,7 +107,9 @@ class AddActividades_ extends State<AddActividades> {
     if(Origen.length > 0 && Destino.length > 0 &&  ( Actividad.length > 0 && Actividad != 'Seleccione actividad realizada') &&  Kilometros.length > 0 && _radioValue >= 0 && LecturaInicial.length > 0 && LecturaFinal.length > 0)
     {
     showDialog(context: context, builder: (_)=>Spinner(),barrierDismissible: false);
-    final Response = await ObtenerAgenciasSucursal().crearDetalles(Origen, Destino, Actividad, double.parse(Kilometros),Pasaje, LecturaInicial, LecturaFinal, widget.ID);        
+    final Response = await ObtenerAgenciasSucursal().crearDetalles(Origen, Destino, Actividad, double.parse(Kilometros),Pasaje, LecturaInicial, LecturaFinal, widget.ID,
+    Pasaje == 'vas' ? costo_vas : costo_pralin
+    );        
     if(Response.statusCode == 200)
     {
         Navigator.of(context).pop(true);          
@@ -137,7 +148,10 @@ class AddActividades_ extends State<AddActividades> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(child:     
+    return Scaffold(
+    resizeToAvoidBottomInset: true,
+      body:  
+      SingleChildScrollView(child: 
     Column(children: [
       SizedBox(height: 50,),      
       Container(child: Text('Ingrese actividades',style: TextStyle(fontSize: 18),),),
@@ -166,7 +180,7 @@ class AddActividades_ extends State<AddActividades> {
         child: 
         Text('Seleccione peaje',style: TextStyle(fontSize: 14,color: Colors.black),textAlign: TextAlign.left,),),                      
       ListTitle_(),
-      SizedBox(height: 30,),
+      
          Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -177,7 +191,7 @@ class AddActividades_ extends State<AddActividades> {
           ],
         )  
     ],      
-    ),);
+    ),));
   }
 
   Widget TextFieldMonto()
@@ -266,8 +280,8 @@ class AddActividades_ extends State<AddActividades> {
 
      Widget TextFieldDinamico__(
       TextEditingController controlador, String Label) {
-    return SingleChildScrollView(child: 
-    Container(
+    return     
+      Container(
             width: MediaQuery.of(context).size.width * 0.9,
             child:TextField(
       controller: controlador,
@@ -275,7 +289,7 @@ class AddActividades_ extends State<AddActividades> {
                       labelText:Label,                     
                       labelStyle: TextStyle(fontSize: 15,color: Colors.black),                                    
                 ),    
-     ) ),);
+     ),);
   } 
 
   Widget ListTitle_()

@@ -22,6 +22,8 @@ class ListadoAgencias{
     prefs.setString('CENA', DiccionarioCostos["CENA"].toString());
     prefs.setString('GASOLINA', DiccionarioCostos["GASOLINA"].toString());
     prefs.setString('HOSPEDAJE', DiccionarioCostos["HOSPEDAJE"].toString());
+    prefs.setString('COSTO_VAS',DiccionarioCostos["COSTO_VAS"].toString());
+    prefs.setString('COSTO_PRALIN_ESCUINTLA',DiccionarioCostos["COSTO_PRALIN_ESCUINTLA"].toString());
   }
 
   Future<String> ObtenerCostos(String llave) async
@@ -188,7 +190,7 @@ class ListadoAgencias{
           Agencias.add(NOMBRE.toString());                                     
         }                                   
 
-        if(!DiccionarioCostos.containsKey("DESAYUNO")){
+        if(!DiccionarioCostos.containsKey("DESAYUNO")){          
           DiccionarioCostos["DESAYUNO"] = Decoded["records"][i]["fields"]["COSTO_DESAYUNO"][0].toString();
           DiccionarioCostos["ALMUERZO"] = Decoded["records"][i]["fields"]["COSTO_ALMUERZOS"][0].toString();
           DiccionarioCostos["CENA"] = Decoded["records"][i]["fields"]["COSTO_CENA"][0].toString();          
@@ -196,6 +198,9 @@ class ListadoAgencias{
           DiccionarioCostos["GASOLINA REGULAR"] = Decoded["records"][i]["fields"]["COSTO_GASOLINA_REGULAR"][0].toString();
           DiccionarioCostos["GASOLINA DIESEL"] = Decoded["records"][i]["fields"]["COSTO_GASOLINA_DIESEL"][0].toString();
           DiccionarioCostos["HOSPEDAJE"] = Decoded["records"][i]["fields"]["COSTO_HOSPEDAJE"][0].toString();
+          DiccionarioCostos["HOSPEDAJE"] = Decoded["records"][i]["fields"]["COSTO_HOSPEDAJE"][0].toString();
+          DiccionarioCostos["COSTO_VAS"] = Decoded["records"][i]["fields"]["COSTO_VAS"][0].toString();
+          DiccionarioCostos["COSTO_PRALIN_ESCUINTLA"] = Decoded["records"][i]["fields"]["COSTO_PRALIN_ESCUINTLA"][0].toString();
         }
       }
 

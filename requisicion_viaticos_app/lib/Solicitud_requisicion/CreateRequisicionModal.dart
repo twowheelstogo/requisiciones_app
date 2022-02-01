@@ -16,10 +16,9 @@ class CalendarModal extends StatefulWidget {
   
     final Map<String,String> Diccionario;  
     final List<String> Agencias;  
-    final String Desayuno,Almuerzo,Cena,Gasolina_diesel,Gasolina_super,Gasolina_regular,Hospedaje;
+    final String Desayuno,Almuerzo,Cena,Gasolina_diesel,Gasolina_super,Gasolina_regular,Hospedaje,Costo_Vas,Costo_Pralin;
   
-
-  const CalendarModal(this.Diccionario,this.Agencias,this.Desayuno,this.Almuerzo,this.Cena,this.Gasolina_diesel,this.Gasolina_super,this.Gasolina_regular,this.Hospedaje,{Key ? key}) : super(key: key);
+  const CalendarModal(this.Diccionario,this.Agencias,this.Desayuno,this.Almuerzo,this.Cena,this.Gasolina_diesel,this.Gasolina_super,this.Gasolina_regular,this.Hospedaje,this.Costo_Vas,this.Costo_Pralin,{Key ? key}) : super(key: key);
   
   @override
   _CalendarModalState createState() => _CalendarModalState();

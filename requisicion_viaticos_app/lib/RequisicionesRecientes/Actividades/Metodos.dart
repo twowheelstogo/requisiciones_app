@@ -37,7 +37,7 @@ class ObtenerAgenciasSucursal {
     Future<http.Response> crearDetalles(
       String ORIGEN,String DESTINO,String Actividades,double KILOMETROS,String PASAJE,
       String LecturaInicial,String LecturaFinal,      
-      String ID_AIRTABLE
+      String ID_AIRTABLE,double costo
    ) async{     
        
     Map<String, String> headers = {
@@ -53,7 +53,8 @@ class ObtenerAgenciasSucursal {
       "KILOMETROS RECORRIDOS": KILOMETROS,
       "PEAJES": PASAJE,
       "LECTURA ODOMETRO INICIAL":LecturaInicial,
-      "LECTURA ODOMETRO FINAL":LecturaFinal,      
+      "LECTURA ODOMETRO FINAL":LecturaFinal,
+      "PASAJE UTILIZADO" : costo
     };
 
     final bodyEncoded = json.encode({

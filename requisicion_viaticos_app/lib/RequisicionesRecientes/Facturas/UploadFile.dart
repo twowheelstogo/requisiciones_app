@@ -42,12 +42,18 @@ class UploadFile_ extends State<UploadFile> {
   DateTime _dateTime = DateTime.now();
   DateTime _dateTime2 = DateTime.now();
 
-   void initState() {
+   void initState() {     
     _dropDownMenuItems = getDropDownMenuItems();
     _current = _dropDownMenuItems[0].value.toString();
     Monto.text = "";
     ID1 = uuid.v1();    
     super.initState();
+  }
+
+  List Metodo(){
+    List items = [];
+    
+    return items;
   }
 
    void changedDropDownItem(String selectedCity) {

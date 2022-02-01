@@ -20,7 +20,7 @@ class MainPage_ extends State<MainPage> {
   String Genero = "";
   Map<String,String> Diccionario = {};
   List<String> Agencias = [];  
-  String Hospedaje = "",Desayuno= "",Almuerzo = "",Cena = "", Gasolina_super = "",Gasolina_diesel = "",Gasolina_regular = "";
+  String Hospedaje = "",Desayuno= "",Almuerzo = "",Cena = "", Gasolina_super = "",Gasolina_diesel = "",Gasolina_regular = "",Costo_Vas = "",Costo_Pralin = "";
 
   void initState() {    
     MainPage_();
@@ -52,7 +52,9 @@ class MainPage_ extends State<MainPage> {
             Gasolina_super=val2[2]["GASOLINA SUPER"];
             Gasolina_regular=val2[2]["GASOLINA REGULAR"];
             Gasolina_diesel=val2[2]["GASOLINA DIESEL"];
-            Hospedaje=val2[2]["HOSPEDAJE"];                                    
+            Hospedaje=val2[2]["HOSPEDAJE"];   
+            Costo_Vas = val2[2]["COSTO_VAS"];                               
+            Costo_Pralin = val2[2]["COSTO_PRALIN_ESCUINTLA"];                               
             }));
         }));
 
@@ -124,7 +126,7 @@ class MainPage_ extends State<MainPage> {
                           // width: MediaQuery.of(context).size.width * 0.95,
                           // )  ,
                                       SizedBox(height: 20,),                        
-                          Solicitud(Diccionario,Agencias,Desayuno,Almuerzo,Cena,Gasolina_super,Gasolina_diesel,Gasolina_regular,Hospedaje)
+                          Solicitud(Diccionario,Agencias,Desayuno,Almuerzo,Cena,Gasolina_super,Gasolina_diesel,Gasolina_regular,Hospedaje,Costo_Vas,Costo_Pralin)
                         ],)
                             ),                                                
                         ]

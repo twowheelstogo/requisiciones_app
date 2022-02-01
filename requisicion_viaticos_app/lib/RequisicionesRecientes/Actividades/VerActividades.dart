@@ -58,9 +58,13 @@ class VerActividades_ extends State<VerActividades> {
   @override
   Widget build(BuildContext context) {
     return  Column(children: [
+      SizedBox(height: 40,),
+      Text('Actividades',style: TextStyle(fontWeight: FontWeight.w700,fontSize: 20),),
+      SizedBox(height: 20,),
       lstActivas.length > 0 ?           
         Column(children: [for(var tmp in lstActivas) ActividadesCard(tmp.Fecha,tmp.ID_AIRTABLE,tmp)],)
-        : Container(alignment:Alignment.topCenter ,child: Column(children: [SizedBox(height: MediaQuery.of(context).size.width * 0.5,) ,Text('Sin actividades.',style:TextStyle(fontSize: 17))],))             
+        : Container(alignment:Alignment.topCenter ,child: Column(children: [SizedBox(height: MediaQuery.of(context).size.width * 0.5,) ,Text('Sin actividades.',style:TextStyle(fontSize: 17))],))  
+                 
     ],);
   }
 

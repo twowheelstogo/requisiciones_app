@@ -24,7 +24,7 @@ class PermisosRecientesRequestCard extends StatelessWidget {
           builder: (context) {
       return 
       FractionallySizedBox(
-        heightFactor: 1,
+        heightFactor: 0.9,
         child: Detalles(lstActivas,ID)
       );      
     });
@@ -75,7 +75,7 @@ class PermisosRecientesRequestCard extends StatelessWidget {
                 Text('Inicio viaje: ' + DateFormat("yyyy-MM-dd").format(DateTime.parse(historial.Inicio)),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500)),
                 SizedBox(height: 5,),
                 Text('Fin viaje: ' + DateFormat("yyyy-MM-dd").format(DateTime.parse(historial.Fin)),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500)), SizedBox(height: 5,),
-                Text('Monto víaticos: Q ' + double.parse(historial.Monto).toString() ,style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500)),SizedBox(height: 5,),                
+                Text('Monto víaticos: Q ' + double.parse(historial.Monto).toStringAsFixed(2) ,style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500)),SizedBox(height: 5,),                
                 Text('Liquidado: Q ' + double.parse(historial.LIQUIDADO.toString()).toStringAsFixed(2),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
                 SizedBox(height: 3,),   
                  Row(
