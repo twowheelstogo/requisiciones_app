@@ -24,7 +24,7 @@ class PermisosRecientesRequestCard extends StatelessWidget {
           builder: (context) {
       return 
       FractionallySizedBox(
-        heightFactor: 0.9,
+        heightFactor: 1,
         child: Detalles(lstActivas,ID)
       );      
     });
@@ -41,19 +41,7 @@ class PermisosRecientesRequestCard extends StatelessWidget {
         //Facturas(historial)
       );      
     });
-  }  
-
-  void openAddActividades(){
-    showModalBottomSheet(context: context,
-        isScrollControlled: true,
-          builder: (context) {
-      return 
-      FractionallySizedBox(
-        heightFactor: 0.9,
-        child: AddActividades()
-      );      
-    });
-  }
+  }    
 
   void openVerActividades(){
     showModalBottomSheet(context: context,
@@ -62,7 +50,7 @@ class PermisosRecientesRequestCard extends StatelessWidget {
       return 
       FractionallySizedBox(
         heightFactor: 0.9,
-        child: VerActividades()
+        child: VerActividades(this.historial)
       );      
     });
   }
@@ -100,8 +88,7 @@ class PermisosRecientesRequestCard extends StatelessWidget {
                  Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FlatButton(onPressed: () {openVerActividades();}, child: Text('Ver Actividades',style: TextStyle(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.solid),)),
-            FlatButton(onPressed: () {openAddActividades();}, child: Text('Añadir activides',style: TextStyle(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.solid),)),                        
+            FlatButton(onPressed: () {openVerActividades();}, child: Text('Ver Actividades',style: TextStyle(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.solid),)),            
           ],
         )                                                                                                  
               ],

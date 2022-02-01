@@ -66,9 +66,7 @@ class DetallesRequisicionesRecientes {
       'Accept': 'application/json',
       'Authorization': "Bearer $Token"
     };
-
-    print(url);
-    print('AQUIIIIII');
+    
     http.Response response = await http.get(Uri.parse(url), headers: headers);
     return response;
   }
