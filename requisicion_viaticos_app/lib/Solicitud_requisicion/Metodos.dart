@@ -7,13 +7,6 @@ import 'package:intl/intl.dart';
 
 class ListadoAgencias{
 
-  void Storage(Map<String,String> diccionario,String llave) async
-  {
-    final prefs = await SharedPreferences.getInstance();
-    var s = json.encode(diccionario);
-    prefs.setString(llave, s.toString());
-    
-  }
    void Storage2(List<String> lista,String llave) async
   {
     final prefs = await SharedPreferences.getInstance();    
@@ -171,8 +164,7 @@ class ListadoAgencias{
     List<String> Agencias = [];
     List<String> Agencias_ = [];
     Map<String,String> Diccionario = {};
-    Map<String,String> DiccionarioCostos = {};
-    Map<String,String> DiccionarioAgencias = {};
+    Map<String,String> DiccionarioCostos = {};    
     bool Bandera = false;
     String paginacion = "";    
     do
@@ -187,8 +179,7 @@ class ListadoAgencias{
         final ID_AIRTABLE = Decoded["records"][i]["fields"]["ID"];
         final NOMBRE = Decoded["records"][i]["fields"]["TMP_REGION"];
         final NOMBRE_AGENCIAS = Decoded["records"][i]["fields"]["NOMBRE"];   
-
-        DiccionarioAgencias[NOMBRE_AGENCIAS] = ID_AIRTABLE;
+        
         Agencias_.add(NOMBRE_AGENCIAS);
 
         if(!Diccionario.containsKey(NOMBRE.toString()))
@@ -219,8 +210,7 @@ class ListadoAgencias{
     }
     while(Bandera != true);
    
-    Costos(DiccionarioCostos); 
-    Storage(DiccionarioAgencias,'Diccionario Agencias');
+    Costos(DiccionarioCostos);     
     Storage2(Agencias_,'Lista Agencias');
     return [Agencias,Diccionario,DiccionarioCostos];    
   }

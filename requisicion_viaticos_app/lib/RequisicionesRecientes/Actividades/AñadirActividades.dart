@@ -26,8 +26,7 @@ class AddActividades_ extends State<AddActividades> {
   DateTime _dateTime = DateTime.now();    
   List<String> Agencias = [];  
   String ID_AIRTABLE = "",ID = "";  
-  int _radioValue = -1;     
-  late TextEditingController? Destino_ ;
+  int _radioValue = -1;       
   List<DropdownMenuItem<String>> _dropDownMenuItems = [];  
   List actividades_ =
   ["Seleccione actividad realizada","Traslado de equipo por cierre","Evento especial","Instalación de equipo de computo","Mantenimiento de equipo de computo"]; 
@@ -71,12 +70,11 @@ class AddActividades_ extends State<AddActividades> {
     _dropDownMenuItems = getDropDownMenuItems();    
     _date_.text = widget.lstActivas.Fecha;
     Origen.text = widget.lstActivas.LUGAR_ORIGEN;  
-    Destino_ = TextEditingController(text: widget.lstActivas.LUGAR_DESTINO);    
+    Destino = widget.lstActivas.LUGAR_DESTINO;    
     Actividad = widget.lstActivas.ACTIVIDAD_REALIZADA.length == 0 ? _dropDownMenuItems[0].value.toString() : widget.lstActivas.ACTIVIDAD_REALIZADA;
     LecturaInicial.text = widget.lstActivas.LECTURA_ODOMETRO_INICIAL;
     LecturaFinal.text = widget.lstActivas.LECTURA_ODOMETRO_FINAL;
-    Kilometros.text = widget.lstActivas.KILOMETROS_RECORRIDOS;    
-    ID_AIRTABLE = widget.lstActivas.LUGAR_DESTINO;
+    Kilometros.text = widget.lstActivas.KILOMETROS_RECORRIDOS;        
     _radioValue = widget.lstActivas.PEAJES == 'vas' ? 0 : widget.lstActivas.PEAJES == 'Palin-Escuintla' ? 1 : -1;        
     super.initState();
   }  
@@ -188,7 +186,7 @@ class AddActividades_ extends State<AddActividades> {
      Column(children: [
      Container(
                 width: MediaQuery.of(context).size.width * 0.9,
-                child: Text('Ingrese Kilometros recorridos',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),),                                    
+                child: Text('Ingrese Kilometros recorridos',style: TextStyle(fontSize: 12,color: Colors.black),textAlign: TextAlign.left,),),                                    
                Container(
                 width: MediaQuery.of(context).size.width * 0.9,
                 child: TextFormField(                      
@@ -209,9 +207,9 @@ class AddActividades_ extends State<AddActividades> {
     child:            
     Column(children: [                      
             Container( alignment: Alignment.topLeft,height: 19,width: MediaQuery.of(context).size.width * 0.9,
-              child: Text(Label,style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),),      
+              child: Text(Label,style: TextStyle(fontSize: 12,color: Colors.black),textAlign: TextAlign.left,),),      
                 FechaFactura(context,controlador), 
-                SizedBox(height: 35,),              
+                SizedBox(height: 18,),              
     ],) );
   }
   
@@ -241,9 +239,10 @@ class AddActividades_ extends State<AddActividades> {
      child: Column(children: [
        Container( alignment: Alignment.topLeft,height: 19,
         child: 
-        Text('Ingrese lugar de destino',style: TextStyle(fontSize: 14,color: Colors.black),textAlign: TextAlign.left,),),                
-         Autocomplete(                      
-              optionsBuilder: (Destino_) {                
+        Text('Ingrese lugar de destino',style: TextStyle(fontSize: 12,color: Colors.black),textAlign: TextAlign.left,),),                
+         Autocomplete(      
+            initialValue: TextEditingValue(text: Destino),                
+              optionsBuilder: (TextEditingValue Destino_) {                
                 if (Destino_.text == '') {
                   return const Iterable<String>.empty();
                 }else{
@@ -274,7 +273,7 @@ class AddActividades_ extends State<AddActividades> {
       controller: controlador,
       decoration: InputDecoration(                    
                       labelText:Label,                     
-                      labelStyle: TextStyle(fontSize: 14,color: Colors.black),                                    
+                      labelStyle: TextStyle(fontSize: 15,color: Colors.black),                                    
                 ),    
      ) ),);
   } 
