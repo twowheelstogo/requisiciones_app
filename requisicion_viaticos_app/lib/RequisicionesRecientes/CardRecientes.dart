@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:requisicion_viaticos_app/Components/Spinner.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/Actividades/A%C3%B1adirActividades.dart';
+import 'package:requisicion_viaticos_app/RequisicionesRecientes/Actividades/Metodos.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/Actividades/VerActividades.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/Facturas/Switch.dart';
 import 'package:requisicion_viaticos_app/RequisicionesRecientes/Metodos.dart';
@@ -89,6 +92,7 @@ class PermisosRecientesRequestCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             FlatButton(onPressed: () {openVerActividades();}, child: Text('Ver Actividades',style: TextStyle(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.solid),)),            
+            FlatButton(onPressed: () {Alerta(context);}, child: Text('Finalizar proceso',style: TextStyle(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.solid),)),            
           ],
         )                                                                                                  
               ],
@@ -96,6 +100,55 @@ class PermisosRecientesRequestCard extends StatelessWidget {
       ])                                    
   );
   }
+
+  void Alerta(context)
+  {
+     showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: Text("Confirmación de finalización",textAlign: TextAlign.center,
+                  style: TextStyle(decoration: TextDecoration.underline,decorationStyle: TextDecorationStyle.solid),
+                  ),
+                  content: Text("¿Desea finalizar el proceso de requisición?",style: TextStyle(color: Colors.black,fontSize: 16),textAlign: TextAlign.center,),
+                  actions: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,    
+                      children: [
+                        FlatButton(
+                      onPressed: () async{
+                        showDialog(context: context, builder: (_)=>Spinner(),barrierDismissible: false);                        
+                        Navigator.of(ctx).pop();                        
+                        final Response = await ObtenerAgenciasSucursal().FinalizarProceso(historial.ID);                 
+                        if(Response.statusCode == 200)
+                        {
+                          Navigator.of(context).pop(true);          
+                            Navigator.pop(context);     
+                            showToast('Proceso finalizado exitosamente.');                         
+                        }
+                        else{
+                      Navigator.of(context).pop(true);  
+                      showToast('Ha ocurrido un error, intente de nuevo.');        
+                    }    
+                      },
+                      child: Text("Finalizar",textAlign: TextAlign.start,),
+                    ),
+                    FlatButton(
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                      },
+                      child: Text("Cancelar",textAlign: TextAlign.center,),
+                    ),
+                      ],
+                    )                    
+                  ],
+                ),);
+  }
+
+
+   void showToast(String mensaje) => Fluttertoast.showToast(
+    msg: mensaje,
+    fontSize: 16,
+  );
 
     
 

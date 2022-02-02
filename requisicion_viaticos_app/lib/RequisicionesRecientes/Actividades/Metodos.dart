@@ -34,6 +34,36 @@ class ActividadesDetalles with ChangeNotifier {
 
 class ObtenerAgenciasSucursal {
 
+   Future<http.Response> FinalizarProceso(
+      String ID
+   ) async{     
+       
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': "Bearer $Token"
+    };
+    
+    Map<String, dynamic> body = {
+      "STATUS" : "FINALIZADO TECNICO"
+    };
+
+    final bodyEncoded = json.encode({
+      "records": [
+        {"id": ID, "fields": body}        
+      ]
+    });
+
+    String url = urlApi + 'REQUISICION_VIATICOS';
+    print(bodyEncoded);
+    try {
+      final response = await http.patch(Uri.parse(url),headers: headers,body: (bodyEncoded));
+      return response;
+    }on http.ClientException catch (e) {
+      throw(e.message);
+    }
+  }
+
     Future<http.Response> crearDetalles(
       String ORIGEN,String DESTINO,String Actividades,double KILOMETROS,String PASAJE,
       String LecturaInicial,String LecturaFinal,      
