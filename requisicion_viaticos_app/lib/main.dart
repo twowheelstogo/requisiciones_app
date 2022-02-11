@@ -21,7 +21,14 @@ void main() async {
   }
 
   String Ruta = await Ruta_();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+     options: FirebaseOptions(
+      apiKey: "AIzaSyAkSRB3iieRDC1iLtaguOV_hq4IsF7GtL8", // Your apiKey
+      appId: "1:753196708878:android:d085ac1eb66b5852ba785f", // Your appId
+      messagingSenderId: "753196708878", // Your messagingSenderId
+      projectId: "requisiciones-viaticos", // Your projectId
+    ),
+  );
   runApp(MyApp(Ruta));
 }
 

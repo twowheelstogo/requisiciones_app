@@ -60,6 +60,7 @@ dependencies:
   permission_handler: ^8.3.0
   open_file: ^3.2.1
   calendarro: ^1.2.0
+  get: ^4.6.1
 
 dev_dependencies:
   flutter_test:
