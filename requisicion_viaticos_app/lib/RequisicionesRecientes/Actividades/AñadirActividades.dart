@@ -30,7 +30,7 @@ class AddActividades_ extends State<AddActividades> {
   List<DropdownMenuItem<String>> _dropDownMenuItems = [];  
   double costo_vas = 0,costo_pralin = 0;
   List actividades_ =
-  ["Seleccione actividad realizada","Traslado de equipo por cierre","Evento especial","Instalación de equipo de computo","Mantenimiento de equipo de computo"]; 
+  ["Seleccione actividad realizada","Traslado de equipo por cierre","Evento especial","Mantenimiento de equipo de computo","Otros Proyectos"]; 
 
   AddActividades_ (){
     

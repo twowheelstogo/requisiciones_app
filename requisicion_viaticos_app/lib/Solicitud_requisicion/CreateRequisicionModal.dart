@@ -37,6 +37,7 @@ class _CalendarModalState extends State<CalendarModal> {
   bool _selected = false;
   bool bandera_hospedaje = false, bandera_gasolina = false, bandera_comida = false;
   TextEditingController Monto = TextEditingController();    
+  TextEditingController GasolinaMonto = TextEditingController();   
   int _radioValue = -1;    
   List ArrayDates = [];
   var _suggestionTextFieldControler = new TextEditingController();
@@ -48,6 +49,7 @@ class _CalendarModalState extends State<CalendarModal> {
   void initState() {      
     _CalendarModalState();
       Monto.text = "0";
+      GasolinaMonto.text = "0";
     super.initState();
   }
   
@@ -106,7 +108,7 @@ class _CalendarModalState extends State<CalendarModal> {
     }
     else{
     
-    bool bandera = !bandera_gasolina ? true : (bandera_gasolina && precioGasolina > 0 && Monto.text != "0") ? true : false;    
+    bool bandera = !bandera_gasolina ? true : (bandera_gasolina && precioGasolina > 0 && Monto.text != "0" &&  GasolinaMonto.text != "0") ? true : false;    
     
     if(ArrayDates.length > 0 && ID_AIRTABLE.length > 0 && bandera)
     {
@@ -125,7 +127,11 @@ class _CalendarModalState extends State<CalendarModal> {
     String _endDate = ArrayDates[total];
 
     final Response = await ListadoAgencias().crearRequisicion(_initDate, _endDate,0,ID_AIRTABLE,ID_USUARIO2,Decoded["records"][0]["fields"]["ID"],
-    widget.Desayuno,widget.Almuerzo,widget.Cena,precioGasolina.toString(),widget.Hospedaje,
+    widget.Desayuno,widget.Almuerzo,widget.Cena,
+    //comente esta el precio de gasolina para que la persona lo pueda escoger
+    // precioGasolina.toString(),
+    GasolinaMonto.text,   
+    widget.Hospedaje,
     bandera_comida,bandera_gasolina,bandera_hospedaje, Monto.text,ArrayDates.length
     );  
     Navigator.of(context).pop(true);
@@ -280,19 +286,9 @@ class _CalendarModalState extends State<CalendarModal> {
               Container(padding: EdgeInsets.all(25.0), child: 
               ListTitle_(),),
               SizedBox(height: 20,),
-            Container( alignment: Alignment.topLeft,height: 19,
-              child: Text('Ingrese km proyectados',style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),),
-              Container(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                    child: TextFormField(                      
-                    controller: Monto,
-                    style: TextStyle(color: Colors.black),   
-                    inputFormatters: [
-              ThousandsFormatter(allowFraction: true)
-                ],
-              keyboardType: TextInputType.number,       
-                  )
-                  ),
+            TipoDeGasolina('Precio de galon',GasolinaMonto),
+            SizedBox(height: 20,),
+            TipoDeGasolina('Ingrese km proyectados',Monto)
             ],)          
              : Container(),
               SizedBox(height: 30),
@@ -318,6 +314,27 @@ class _CalendarModalState extends State<CalendarModal> {
     );
   }
 
+  Widget TipoDeGasolina(String Mensaje,TextEditingController controlador)
+  //'Ingrese km proyectados'
+  {
+    return Column(
+      children: [
+         Container( alignment: Alignment.topLeft,height: 19,
+              child: Text(Mensaje,style: TextStyle(fontSize: 15,color: Colors.black),textAlign: TextAlign.left,),),
+              Container(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                    child: TextFormField(                      
+                    controller: controlador,
+                    style: TextStyle(color: Colors.black),   
+                    inputFormatters: [
+              ThousandsFormatter(allowFraction: true)
+                ],
+              keyboardType: TextInputType.number,       
+                  )
+                  ),
+      ],
+    );
+  }
   Widget Requsion_(String Mensajes, int opcion,final size,Color color_)
   {
     return  Container(                    
