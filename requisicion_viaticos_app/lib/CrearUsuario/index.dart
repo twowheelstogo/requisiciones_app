@@ -14,8 +14,6 @@ class CreateUser_ extends State<CreateUser> {
   String dpi_="",email="",pass="";  
   List bandera = [];
     
-
-
   @override  
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -37,11 +35,11 @@ class CreateUser_ extends State<CreateUser> {
                 SizedBox(height: 10,),
                 Text('Creación de usuario',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w700),),
             SizedBox(height: 80,),            
-                inputTextField(dpi_,"Ingrese su número de DPI",TextInputType.number,"ej. 2544985550101",false),
+                inputTextField(1,"Ingrese su número de DPI",TextInputType.number,"ej. 2544985550101",false),
                  SizedBox(height: 15,),
-                inputTextField(email,"Ingrese correo electronico",TextInputType.emailAddress,"correo@gmail.com",false),
+                inputTextField(2,"Ingrese correo electronico",TextInputType.emailAddress,"correo@gmail.com",false),
                  SizedBox(height: 15,),
-                inputTextField(pass,"Ingrese contraseña",TextInputType.visiblePassword,"******",true),
+                inputTextField(3,"Ingrese contraseña",TextInputType.visiblePassword,"******",true),
             SizedBox(height: 20,),            
             Container(
               width: size.width*0.9,
@@ -62,7 +60,7 @@ class CreateUser_ extends State<CreateUser> {
   }
   
 
-   Widget inputTextField(String variable,String mensaje, TextInputType tipo,String hintText,bool flag){
+   Widget inputTextField(int opcion,String mensaje, TextInputType tipo,String hintText,bool flag){
     return TextFormField(
     obscureText: flag,
      style: TextStyle(color: Colors.black),
@@ -70,7 +68,14 @@ class CreateUser_ extends State<CreateUser> {
       keyboardType: tipo,     
         onChanged: (value){
           setState(() {
-            variable=value;
+            if(opcion == 1){
+              dpi_ = value;
+              print(opcion);
+            }else if(opcion == 2){
+              email = value;
+            }else{
+              pass = value;
+            }            
           });
         },
         decoration: InputDecoration(
