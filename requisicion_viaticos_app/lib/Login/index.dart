@@ -3,6 +3,7 @@ import 'package:requisicion_viaticos_app/Components/Spinner.dart';
 import 'package:requisicion_viaticos_app/Login/Metodos.dart';
 import 'package:requisicion_viaticos_app/MainPage/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:requisicion_viaticos_app/CrearUsuario/index.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -55,9 +56,11 @@ class LoginPageState_ extends State<LoginPage> {
               children: [
                 SizedBox(height: size.height*0.15,),
                 Image.asset("assets/mrb-logo.png",width: 150,),
-            SizedBox(height: 100,),
+                SizedBox(height: 10,),
+                Text('Inicio de Sesión',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w700),),
+            SizedBox(height: 90,),
                 inputTextField(),
-            SizedBox(height: 20,),            
+            SizedBox(height: 20,),                        
             Container(
               width: size.width*0.9,
               child: OutlineButton(onPressed: () async{ SignIn();},
@@ -66,6 +69,13 @@ class LoginPageState_ extends State<LoginPage> {
               child: Text("INICIAR SESIÓN"),
               ),
             ),
+               SizedBox(height: 20,), 
+                Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                   padding: const EdgeInsets.all(10),
+                   child: createUser())),            
+               SizedBox(height: 20,), 
             Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -80,6 +90,20 @@ class LoginPageState_ extends State<LoginPage> {
         ),
 
       ),
+    );
+  }
+
+    Widget createUser(){
+    return GestureDetector(
+      child: Text("Crear Usuario", style: TextStyle(decoration: TextDecoration.underline, color: Colors.blue)),
+      onTap: ()  {
+         Navigator.push<void>(
+        context,
+        MaterialPageRoute<void>(
+          builder: (BuildContext context) => CreateUser(),
+        ),
+      );
+      },
     );
   }
 
