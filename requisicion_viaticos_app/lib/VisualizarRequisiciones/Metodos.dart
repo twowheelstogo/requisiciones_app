@@ -13,13 +13,15 @@ class Historial with ChangeNotifier {
   final String Agencias;
   final String Status;
   final String Monto;
+  final String Depreciacion;
 
   Historial({
     required this.Inicio,
     required this.Fin,
     required this.Agencias,
     required this.Status,
-    required this.Monto
+    required this.Monto,
+    required this.Depreciacion
   });
 
 }
@@ -48,7 +50,11 @@ class HistorialRequisiciones
           Fin: tmp[i]["fields"]["FECHA_RETORNO_VIAJE"].toString(), 
           Agencias: nombre_.toString(), 
           Status: tmp[i]["fields"]["STATUS"].toString(), 
-          Monto: tmp[i]["fields"]["MONTO_VIATICOS"].toString()));
+          Monto: tmp[i]["fields"]["MONTO_VIATICOS"].toString(),
+          Depreciacion:  tmp[i]["fields"]["DEPRECIACION"] == null ? '0'
+          : tmp[i]["fields"]["DEPRECIACION"].toString()
+          ),          
+          );
         }
       }
     }

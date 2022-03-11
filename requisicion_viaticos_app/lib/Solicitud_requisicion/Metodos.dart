@@ -111,13 +111,14 @@ class ListadoAgencias{
     
    Future<http.Response> crearRequisicion(String Inicio, String Fin,double Monto,String ID_AGENCIA,String ID_USUARIO,String ID2,
    String Desayuno,String Almuerzo,String Cena,String Gasolina,String Hospedaje,
-   bool bandera_comida,bool bandera_gasolina,bool bandera_hospedaje,String Kilometros,int totalDias
+   bool bandera_comida,bool bandera_gasolina,bool bandera_hospedaje,String Kilometros,int totalDias,String Depreciacion
    ) async{
    
         
      double MontoHotel =  double.parse(Hospedaje) * double.parse(totalDias.toString());
      double MontoComida = ( double.parse(Desayuno) + double.parse(Almuerzo) + double.parse(Cena)) * double.parse(totalDias.toString());
      double MontoGasolina = ((double.parse(Kilometros) / 37) * double.parse(Gasolina));
+     double DepreciacionFinal = Depreciacion == "Automovil Empresa" ? 0 : (double.parse(Kilometros));
 
      MontoHotel = bandera_hospedaje ? MontoHotel : 0;
      MontoComida = bandera_comida ? MontoComida : 0;
@@ -139,7 +140,8 @@ class ListadoAgencias{
       "TARIFARIO_VIATICOS" : [ID2],
       "MONTO_HOTEL" : MontoHotel,
       "MONTO_COMIDA" : MontoComida,
-      "MONTO_GASOLINA" : MontoGasolina,      
+      "MONTO_GASOLINA" : MontoGasolina, 
+      "DEPRECIACION"  : DepreciacionFinal
     };
 
     final bodyEncoded = json.encode({

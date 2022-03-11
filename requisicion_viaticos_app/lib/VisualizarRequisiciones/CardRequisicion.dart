@@ -31,6 +31,8 @@ class PermisosRequestCard extends StatelessWidget {
                 Text('Inicio viaje: ' + DateFormat("yyyy-MM-dd").format(DateTime.parse(historial.Inicio)),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500)),                
                 Text('Fin viaje: ' + DateFormat("yyyy-MM-dd").format(DateTime.parse(historial.Fin)),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500)), SizedBox(height: 5,),
                 Text('Monto víaticos: Q ' + double.parse(historial.Monto).toStringAsFixed(2) ,style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500)),SizedBox(height: 5,),                
+                Text('Depreciacion: Q ' + double.parse(historial.Depreciacion.toString()).toStringAsFixed(2),style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),textAlign: TextAlign.center,),
+                SizedBox(height:10,), 
                 statusComp("${historial.Status}"),                
                 SizedBox(height: 15,),                                    
               ],
@@ -42,7 +44,7 @@ class PermisosRequestCard extends StatelessWidget {
   Widget statusComp(String value){
 
     return SizedBox(
-      width: 80,
+      width: 150,
       child: Container(
         decoration: new BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(8)),

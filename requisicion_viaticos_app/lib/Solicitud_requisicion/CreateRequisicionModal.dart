@@ -44,14 +44,32 @@ class _CalendarModalState extends State<CalendarModal> {
   String dropdownvalue = 'Seleccione una opción';   
   String ID_AIRTABLE = "";  
   String TipoGasolina = "";
-  
+  double Depreciacion = 0;
+  List actividades_ =
+  ["Seleccione depreciación","Automovil Propio","Automovil Empresa"]; 
+  List<DropdownMenuItem<String>> _dropDownMenuItems = [];  
+  String TipoDepreciacion = "";
+
    @override
   void initState() {      
     _CalendarModalState();
+    _dropDownMenuItems = getDropDownMenuItems();    
+    TipoDepreciacion = _dropDownMenuItems[0].value.toString();
       Monto.text = "0";
       GasolinaMonto.text = "0";
     super.initState();
   }
+
+  List<DropdownMenuItem<String>> getDropDownMenuItems() {
+    List<DropdownMenuItem<String>> items = [];
+    for (String city in actividades_) {
+      items.add(new DropdownMenuItem(
+          value: city,
+          child: new Text(city)
+      ));
+    }
+    return items;
+  }  
   
 
  Future<String> getConstant(String msg) async {
@@ -60,6 +78,12 @@ class _CalendarModalState extends State<CalendarModal> {
     final res = prefs.getString(msg);
     DPI = '$res';
     return DPI;
+  }
+
+  void changedDropDownItem(String selectedActivity) {
+    setState(() {
+      TipoDepreciacion = selectedActivity;
+    });
   }
 
   _CalendarModalState() {       
@@ -75,7 +99,6 @@ class _CalendarModalState extends State<CalendarModal> {
    void _handleRadioValueChange(int value) {
     setState(() {
       _radioValue = value;
-
       switch (_radioValue) {
         case 0:
         setState(() {
@@ -106,11 +129,10 @@ class _CalendarModalState extends State<CalendarModal> {
       final _snackbar = SnackBar(content: Text('Debe de seleccionar los gastos que necesite.'));
       ScaffoldMessenger.of(context).showSnackBar(_snackbar);
     }
-    else{
-    
+    else{    
     bool bandera = !bandera_gasolina ? true : (bandera_gasolina && precioGasolina > 0 && Monto.text != "0" &&  GasolinaMonto.text != "0") ? true : false;    
     
-    if(ArrayDates.length > 0 && ID_AIRTABLE.length > 0 && bandera)
+    if(ArrayDates.length > 0 && ID_AIRTABLE.length > 0 && bandera && ( TipoDepreciacion.length > 0 && TipoDepreciacion != 'Seleccione actividad realizada') )
     {
     showDialog(context: context, builder: (_)=>Spinner(),barrierDismissible: false);  
     final Res = await ListadoAgencias().crearTarifario();
@@ -132,7 +154,7 @@ class _CalendarModalState extends State<CalendarModal> {
     // precioGasolina.toString(),
     GasolinaMonto.text,   
     widget.Hospedaje,
-    bandera_comida,bandera_gasolina,bandera_hospedaje, Monto.text,ArrayDates.length
+    bandera_comida,bandera_gasolina,bandera_hospedaje, Monto.text,ArrayDates.length,TipoDepreciacion
     );  
     Navigator.of(context).pop(true);
 
@@ -253,7 +275,6 @@ class _CalendarModalState extends State<CalendarModal> {
             // 1 comida, 2 hospedaje, 3 gasolina
             Text('Seleccione los gastos que necesite que se le proporcione'),          
             new Divider(height: 5.0, color: Colors.black),
-
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child:
@@ -285,6 +306,8 @@ class _CalendarModalState extends State<CalendarModal> {
 //              SizedBox(height: 20,),
               Container(padding: EdgeInsets.all(25.0), child: 
               ListTitle_(),),
+              SizedBox(height: 20,),
+              Depreciacion_(),
               SizedBox(height: 20,),
             TipoDeGasolina('Precio de galon',GasolinaMonto),
             SizedBox(height: 20,),
@@ -334,6 +357,17 @@ class _CalendarModalState extends State<CalendarModal> {
                   ),
       ],
     );
+  }
+  Widget Depreciacion_()
+  {
+    return   Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: new DropdownButton(                 
+                value: TipoDepreciacion,                
+                items: _dropDownMenuItems,
+                style: TextStyle(fontSize: 14,color: Colors.black),
+                onChanged: (value) {changedDropDownItem(value.toString());},
+              ),);
   }
   Widget Requsion_(String Mensajes, int opcion,final size,Color color_)
   {
@@ -418,8 +452,19 @@ class _CalendarModalState extends State<CalendarModal> {
                           style: new TextStyle(fontSize: 16.0),
                         ),
                       ],
-                    );
-      
+                    );      
+  }
+  Widget CheckBox_Depreciacion_(int opcion){
+      // 1 propio, 2 empresa
+      return Checkbox(
+      checkColor: Colors.white,      
+      value: opcion == 1 ? bandera_comida : opcion == 2 ? bandera_hospedaje : bandera_gasolina,
+      onChanged: (bool? value) {
+        setState(() {
+          opcion == 1 ? bandera_comida = value! : opcion == 2 ? bandera_hospedaje = value! : bandera_gasolina = value!;          
+        });
+      },
+    ); 
   }
   Widget CheckBox_(int opcion){
       // 1 comida, 2 hospedaje, 3 gasolina
