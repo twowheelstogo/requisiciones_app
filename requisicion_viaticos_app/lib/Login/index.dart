@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:requisicion_viaticos_app/Components/Spinner.dart';
 import 'package:requisicion_viaticos_app/Login/Metodos.dart';
 import 'package:requisicion_viaticos_app/MainPage/index.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert'; 
 import 'package:requisicion_viaticos_app/CrearUsuario/index.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,12 +13,17 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState_ extends State<LoginPage> {
 
-  String _userId="";
+  String _userId="", pass = "";  
   List bandera = [];
 
-     void SignIn() async {    
+     void SignIn() async { 
+
+final key = utf8.encode(pass);
+                final bytes = utf8.encode("foobar");
+                final hmacSha256 = Hmac(sha256, key); // HMAC-SHA256
+                final digest = hmacSha256.convert(bytes);      
     showDialog(context: context, builder: (_)=>Spinner(),barrierDismissible: false);
-    bandera = await Autenticacion().Autenticar(_userId);
+    bandera = await Autenticacion().Autenticar(_userId,digest.toString());
     final _snackbar = SnackBar(content: Text(bandera[1]));
 
 
@@ -59,7 +65,9 @@ class LoginPageState_ extends State<LoginPage> {
                 SizedBox(height: 10,),
                 Text('Inicio de Sesión',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w700),),
             SizedBox(height: 90,),
-                inputTextField(),
+                inputTextField(1,"Ingrese su número de DPI",TextInputType.number,"ej. 2544985550101",false),
+                SizedBox(height: 10,),
+                inputTextField(3,"Ingrese contraseña",TextInputType.visiblePassword,"******",true),
             SizedBox(height: 20,),                        
             Container(
               width: size.width*0.9,
@@ -95,7 +103,7 @@ class LoginPageState_ extends State<LoginPage> {
 
     Widget createUser(){
     return GestureDetector(
-      child: Text("Crear Usuario", style: TextStyle(decoration: TextDecoration.underline, color: Colors.blue)),
+      child: Text("Generar Credenciales", style: TextStyle(decoration: TextDecoration.underline, color: Colors.blue,fontSize:17)),
       onTap: ()  {
          Navigator.push<void>(
         context,
@@ -105,21 +113,27 @@ class LoginPageState_ extends State<LoginPage> {
       );
       },
     );
-  }
+  }     
 
-   Widget inputTextField(){
+   Widget inputTextField(int opcion,String mensaje, TextInputType tipo,String hintText,bool flag){
     return TextFormField(
+    obscureText: flag,
      style: TextStyle(color: Colors.black),
      cursorColor: Colors.black,
-      keyboardType:TextInputType.number,     
+      keyboardType: tipo,     
         onChanged: (value){
           setState(() {
-            _userId=value;
+            if(opcion == 1){
+              _userId = value;
+              print(opcion);
+            }else{
+              pass = value;
+            }            
           });
         },
         decoration: InputDecoration(
-            hintText: "eg. 2544985550101",
-            labelText: "Ingrese su DPI",
+            hintText: hintText,
+            labelText: mensaje,
             labelStyle: Theme.of(context).textTheme.bodyText2,
             border: OutlineInputBorder()),
       );

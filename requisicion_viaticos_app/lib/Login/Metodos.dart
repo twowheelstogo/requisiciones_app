@@ -20,11 +20,11 @@ class Autenticacion
   }
 
    // ignore: non_constant_identifier_names
-  Future<List> Autenticar(String NombreUsuario) async {
+  Future<List> Autenticar(String NombreUsuario,String pass) async {
     bool bandera = false;
     String Mensaje = "";
     //si es correcto entonces pasa a la siguiente vista
-    final Response = await getAuthUserInfo(NombreUsuario);
+    final Response = await getAuthUserInfo(NombreUsuario,pass);
     final Decoded = json.decode(Response.body);
 
     if (Response.statusCode == 200) {
@@ -48,11 +48,12 @@ class Autenticacion
   }
 
 
-   Future<http.Response> getAuthUserInfo(String NombreUsuario) async {
+   Future<http.Response> getAuthUserInfo(String NombreUsuario,String pass) async {
     String url = urlApi +
-        "COLABORADORES?filterByFormula=AND({No_DOCUMENTO}='" +
+        "COLABORADORES?filterByFormula=AND(({No_DOCUMENTO}=" +
         NombreUsuario +
-        "')";
+        "),({CONTRASEÑA} = '"+ pass + "'))";
+        print(url);
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
